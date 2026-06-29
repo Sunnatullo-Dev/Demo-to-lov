@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=1, user-scalable=no">
-<meta name="theme-color" content="#00C2CB">
+<meta name="theme-color" content="#15C3B2">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -11,97 +11,110 @@
 <title>Payme</title>
 <style>
   :root{
-    --aqua:#00C2CB; --green:#1FD3B0; --grad:linear-gradient(135deg,#00C2CB 0%,#1FD3B0 100%);
-    --bg:#F4F6F8; --card:#FFFFFF; --ink:#0E1726; --muted:#8A94A6; --line:#EDF0F4;
-    --pos:#16C784; --neg:#0E1726; --shadow:0 8px 24px rgba(16,23,38,.07);
+    --aqua:#15C3B2; --aqua2:#12B7A6;
+    --teal:linear-gradient(165deg,#21D0BE 0%,#13BCAB 100%);
+    --bg:#EEF1F4; --card:#FFFFFF; --ink:#0E1726; --muted:#9099A8; --line:#EEF1F4;
+    --pos:#16C784; --red:#FF5B5B; --shadow:0 6px 18px rgba(16,23,38,.06);
     --safe-top:env(safe-area-inset-top,0px); --safe-bot:env(safe-area-inset-bottom,0px);
   }
   *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;margin:0;padding:0}
   html,body{height:100%}
   body{
     font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
-    background:#11202b;color:var(--ink);overscroll-behavior:none;
-    display:flex;justify-content:center;align-items:stretch;
+    background:#0e2a28;color:var(--ink);overscroll-behavior:none;display:flex;justify-content:center;
   }
-  /* Phone frame on big screens; full screen on phones */
-  #app{
-    width:100%;max-width:430px;background:var(--bg);position:relative;overflow:hidden;
-    min-height:100vh;display:flex;flex-direction:column;
-  }
+  #app{width:100%;max-width:430px;background:var(--bg);position:relative;overflow:hidden;
+    min-height:100vh;display:flex;flex-direction:column}
   @media(min-width:480px){
     body{align-items:center;padding:18px}
     #app{height:92vh;min-height:0;border-radius:38px;box-shadow:0 30px 80px rgba(0,0,0,.5);border:10px solid #0b1620}
   }
-  .scroll{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding-bottom:96px}
+  .scroll{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding-bottom:92px;background:var(--bg)}
   .scroll::-webkit-scrollbar{display:none}
+  .page{display:none}.page.on{display:block}
 
-  /* ---------- Header ---------- */
-  .hdr{padding:calc(var(--safe-top) + 16px) 18px 14px;display:flex;align-items:center;gap:12px}
-  .ava{width:42px;height:42px;border-radius:50%;background:var(--grad);display:flex;align-items:center;
-       justify-content:center;color:#fff;font-weight:700;font-size:16px;flex:0 0 auto}
-  .hi small{color:var(--muted);font-size:12px;display:block}
-  .hi b{font-size:16px;font-weight:700}
-  .hdr .sp{flex:1}
-  .iconbtn{width:40px;height:40px;border-radius:13px;background:#fff;box-shadow:var(--shadow);
-       border:none;display:flex;align-items:center;justify-content:center;position:relative}
-  .lng{font-weight:800;font-size:12px;color:var(--aqua);min-width:40px}
-  .dot{position:absolute;top:9px;right:10px;width:8px;height:8px;border-radius:50%;background:#FF5B5B;border:2px solid #fff}
+  /* ============ HOME : teal top ============ */
+  .teal{background:var(--teal);padding:calc(var(--safe-top) + 12px) 18px 26px;color:#fff;position:relative}
+  .thdr{display:flex;align-items:center;gap:10px;margin-bottom:14px}
+  .ava{width:38px;height:38px;border-radius:50%;background:rgba(255,255,255,.22);display:flex;align-items:center;
+       justify-content:center;color:#fff;font-weight:700;font-size:14px;flex:0 0 auto;border:1.5px solid rgba(255,255,255,.5)}
+  .thdr .sp{flex:1}
+  .ic-t{width:30px;height:30px;display:flex;align-items:center;justify-content:center;position:relative;color:#fff}
+  .ic-t svg{width:23px;height:23px}
+  .lngp{font-weight:800;font-size:12px;border:1.5px solid rgba(255,255,255,.6);border-radius:9px;padding:3px 8px;color:#fff}
+  .nbadge{position:absolute;top:-3px;right:-4px;background:var(--red);color:#fff;font-size:9px;font-weight:800;
+       min-width:15px;height:15px;border-radius:8px;display:flex;align-items:center;justify-content:center;padding:0 3px}
 
-  /* ---------- Hero card ---------- */
-  .cards{display:flex;gap:12px;overflow-x:auto;padding:4px 18px 6px;scroll-snap-type:x mandatory}
-  .cards::-webkit-scrollbar{display:none}
-  .pcard{min-width:88%;scroll-snap-align:center;border-radius:22px;padding:20px;color:#fff;
-       position:relative;overflow:hidden;box-shadow:0 12px 30px rgba(0,194,203,.32)}
-  .pcard.g1{background:var(--grad)}
-  .pcard.g2{background:linear-gradient(135deg,#5B6CF6,#9A6BFF)}
-  .pcard .wm{font-weight:800;letter-spacing:.5px;font-size:18px;opacity:.95}
-  .pcard .bal{font-size:13px;opacity:.85;margin-top:18px}
-  .pcard .amt{font-size:26px;font-weight:800;margin-top:2px}
-  .pcard .num{margin-top:14px;font-size:14px;letter-spacing:2px;opacity:.9;font-variant-numeric:tabular-nums}
-  .pcard .plus{position:absolute;top:18px;right:18px;width:36px;height:36px;border-radius:50%;
-       background:rgba(255,255,255,.22);display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:300}
-  .pcard .chip{position:absolute;width:150px;height:150px;border-radius:50%;background:rgba(255,255,255,.10);
-       right:-40px;bottom:-60px}
+  .redpill{background:#FF6B6B;color:#fff;font-size:12.5px;font-weight:600;text-align:center;
+       padding:9px 16px;border-radius:20px;margin:0 auto 14px;width:max-content;max-width:100%;box-shadow:0 4px 12px rgba(255,91,91,.35)}
+  .baltitle{text-align:center;font-size:13px;opacity:.92;font-weight:500}
+  .balrow{display:flex;align-items:center;justify-content:center;gap:10px;margin:2px 0 2px}
+  .balrow .eye{opacity:.9}.balrow svg{width:20px;height:20px}
+  .balrow b{font-size:34px;font-weight:800;letter-spacing:-.5px}
+  .balrow .cur{font-size:15px;font-weight:500;opacity:.9;align-self:flex-end;margin-bottom:6px}
+  .balrow .dots{position:absolute;right:22px}
+  .balsub{text-align:center;font-size:12.5px;opacity:.85;margin-bottom:20px}
 
-  /* ---------- Quick actions ---------- */
-  .quick{display:flex;gap:10px;padding:14px 18px 6px}
-  .qa{flex:1;background:#fff;border:none;border-radius:18px;padding:14px 6px;box-shadow:var(--shadow);
-      display:flex;flex-direction:column;align-items:center;gap:8px;font-size:11.5px;font-weight:600;color:var(--ink)}
-  .qa .ic{width:42px;height:42px;border-radius:14px;background:#E9FBF8;display:flex;align-items:center;justify-content:center}
-  .qa svg{width:22px;height:22px}
+  .circles{display:flex;justify-content:space-around;text-align:center}
+  .circ{background:none;border:none;display:flex;flex-direction:column;align-items:center;gap:9px;color:#fff;font-size:13px;font-weight:600}
+  .circ .cc{width:66px;height:66px;border-radius:50%;background:#fff;display:flex;align-items:center;justify-content:center;
+       position:relative;box-shadow:0 8px 18px rgba(0,0,0,.12)}
+  .circ .cc svg{width:30px;height:30px}
+  .circ .cc .warn{position:absolute;top:-2px;right:-2px;width:20px;height:20px;border-radius:50%;background:var(--red);
+       color:#fff;font-size:13px;font-weight:800;display:flex;align-items:center;justify-content:center;border:2px solid #21D0BE}
 
-  /* ---------- Search ---------- */
-  .search{margin:14px 18px 6px;background:#fff;border-radius:16px;box-shadow:var(--shadow);
-      display:flex;align-items:center;gap:10px;padding:13px 16px;color:var(--muted)}
-  .search input{border:none;outline:none;font-size:15px;flex:1;background:transparent;color:var(--ink)}
+  /* ============ HOME : white sheet ============ */
+  .sheet{background:var(--bg);border-radius:22px 22px 0 0;margin-top:-16px;padding:18px 16px 6px;position:relative}
 
-  /* ---------- Section ---------- */
-  .sec{display:flex;align-items:center;justify-content:space-between;padding:18px 18px 10px}
-  .sec h3{font-size:16px;font-weight:800}
-  .sec a{color:var(--aqua);font-size:13px;font-weight:700;text-decoration:none}
+  .notif{background:#fff;border-radius:18px;box-shadow:var(--shadow);padding:14px;display:flex;gap:12px;margin-bottom:14px}
+  .melogo{width:40px;height:40px;border-radius:12px;background:#9FD134;display:flex;align-items:center;justify-content:center;
+       font-weight:800;font-size:16px;color:#16321f;flex:0 0 auto;font-style:italic}
+  .notif .nx{flex:1}
+  .notif .ntop{display:flex;align-items:center;justify-content:space-between;color:var(--muted);font-size:11px;margin-bottom:3px}
+  .notif .nx p{font-size:13.5px;line-height:1.35}
+  .notif .nbtn{display:block;text-align:right;color:var(--aqua);font-weight:800;font-size:13px;margin-top:6px}
+  .notif .close{color:#C7CFDA;font-size:18px;line-height:1}
 
-  /* ---------- Category grid ---------- */
-  .grid{display:grid;grid-template-columns:repeat(4,1fr);gap:6px 4px;padding:0 12px}
+  .promo{border-radius:18px;background:linear-gradient(120deg,#1FD0BE,#16B8A8);color:#fff;padding:16px 18px;
+       margin-bottom:18px;display:flex;align-items:center;gap:10px;box-shadow:0 8px 20px rgba(21,195,178,.28);overflow:hidden;position:relative}
+  .promo .gift{font-size:38px;flex:0 0 auto}
+  .promo b{font-size:15px;font-weight:800;line-height:1.3}
+
+  .sec{display:flex;align-items:center;justify-content:space-between;padding:0 4px 11px}
+  .sec h3{font-size:16.5px;font-weight:800}
+  .sec a{color:var(--aqua);font-size:13.5px;font-weight:700;text-decoration:none}
+
+  .two{display:flex;gap:11px;margin-bottom:20px}
+  .svc{flex:1;background:#fff;border:none;border-radius:16px;box-shadow:var(--shadow);padding:14px;
+       display:flex;align-items:center;gap:11px;text-align:left;font-size:13.5px;font-weight:700;color:var(--ink);line-height:1.25}
+  .svc .ic{width:38px;height:38px;border-radius:11px;display:flex;align-items:center;justify-content:center;flex:0 0 auto}
+  .svc svg{width:21px;height:21px}
+
+  .grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px 4px}
   .cat{background:none;border:none;display:flex;flex-direction:column;align-items:center;gap:7px;
-       padding:10px 4px;border-radius:16px;font-size:11px;font-weight:600;color:var(--ink);line-height:1.2}
-  .cat .ic{width:52px;height:52px;border-radius:18px;display:flex;align-items:center;justify-content:center}
-  .cat svg{width:26px;height:26px}
+       padding:8px 2px;border-radius:16px;font-size:11px;font-weight:600;color:var(--ink);line-height:1.2}
+  .cat .ic{width:54px;height:54px;border-radius:18px;display:flex;align-items:center;justify-content:center}
+  .cat svg{width:27px;height:27px}
   .cat span{display:block;min-height:26px}
 
-  /* ---------- Payments list ---------- */
-  .plist{padding:6px 14px}
+  /* ============ generic page header ============ */
+  .phdr{padding:calc(var(--safe-top) + 16px) 18px 8px}
+  .phdr b{font-size:22px;font-weight:800}
+  .search{margin:12px 16px 6px;background:#fff;border-radius:15px;box-shadow:var(--shadow);
+      display:flex;align-items:center;gap:10px;padding:13px 15px;color:var(--muted)}
+  .search input{border:none;outline:none;font-size:15px;flex:1;background:transparent;color:var(--ink)}
+
+  .plist{padding:6px 16px}
   .prow{display:flex;align-items:center;gap:14px;background:#fff;border:none;width:100%;
         padding:14px;border-radius:16px;margin-bottom:8px;box-shadow:var(--shadow);text-align:left}
   .prow .ic{width:44px;height:44px;border-radius:14px;display:flex;align-items:center;justify-content:center;flex:0 0 auto}
   .prow svg{width:23px;height:23px}
   .prow b{font-size:14.5px;font-weight:700;display:block}
-  .prow small{font-size:12px;color:var(--muted)}
   .prow .arr{margin-left:auto;color:#C7CFDA}
 
-  /* ---------- History ---------- */
-  .daygrp{padding:4px 18px}
-  .dayttl{font-size:12px;font-weight:700;color:var(--muted);margin:14px 0 8px;text-transform:capitalize}
-  .tx{display:flex;align-items:center;gap:14px;padding:12px 0;border-bottom:1px solid var(--line)}
+  .daygrp{padding:0 18px}
+  .dayttl{font-size:12px;font-weight:700;color:var(--muted);margin:16px 0 6px;text-transform:capitalize}
+  .tx{display:flex;align-items:center;gap:14px;padding:12px 0;border-bottom:1px solid #E4E8EE}
   .tx .ic{width:44px;height:44px;border-radius:14px;display:flex;align-items:center;justify-content:center;flex:0 0 auto}
   .tx svg{width:22px;height:22px}
   .tx b{font-size:14.5px;font-weight:700;display:block}
@@ -109,23 +122,18 @@
   .tx .val{margin-left:auto;font-weight:800;font-size:14.5px;white-space:nowrap}
   .tx .val.pos{color:var(--pos)}
 
-  /* ---------- Profile ---------- */
   .phead{display:flex;flex-direction:column;align-items:center;gap:8px;padding:24px 18px 10px}
-  .phead .ava{width:84px;height:84px;font-size:30px;border-radius:50%}
-  .phead b{font-size:19px;font-weight:800}
-  .phead small{color:var(--muted)}
-  .menu{padding:10px 14px}
+  .phead .ava{width:84px;height:84px;font-size:30px;border-radius:50%;background:var(--teal)}
+  .phead b{font-size:19px;font-weight:800}.phead small{color:var(--muted)}
+  .menu{padding:10px 16px}
   .mrow{display:flex;align-items:center;gap:14px;background:#fff;border:none;width:100%;text-align:left;
         padding:15px 14px;border-bottom:1px solid var(--line);font-size:15px;font-weight:600;color:var(--ink)}
-  .menu .mrow:first-child{border-radius:16px 16px 0 0}
-  .menu .mrow:last-child{border-radius:0 0 16px 16px;border-bottom:none}
-  .mrow .ic{width:34px;height:34px;border-radius:11px;background:#E9FBF8;display:flex;align-items:center;justify-content:center}
-  .mrow svg{width:19px;height:19px}
-  .mrow .arr{margin-left:auto;color:#C7CFDA;font-weight:400}
-  .mrow .tag{margin-left:auto;color:var(--aqua);font-weight:800;font-size:13px}
+  .menu .mrow:first-child{border-radius:16px 16px 0 0}.menu .mrow:last-child{border-radius:0 0 16px 16px;border-bottom:none}
+  .mrow .ic{width:34px;height:34px;border-radius:11px;background:#E5FAF7;display:flex;align-items:center;justify-content:center}
+  .mrow svg{width:19px;height:19px}.mrow .arr{margin-left:auto;color:#C7CFDA}.mrow .tag{margin-left:auto;color:var(--aqua);font-weight:800;font-size:13px}
   .ver{text-align:center;color:var(--muted);font-size:12px;padding:18px}
 
-  /* ---------- Sub screens (flow / scanner) ---------- */
+  /* ============ sub screens ============ */
   .screen{position:absolute;inset:0;background:var(--bg);z-index:40;display:flex;flex-direction:column;
           transform:translateX(100%);transition:transform .26s cubic-bezier(.3,.7,.2,1)}
   .screen.show{transform:translateX(0)}
@@ -135,33 +143,24 @@
   .field{background:#fff;border-radius:16px;box-shadow:var(--shadow);padding:14px 16px;margin-bottom:12px}
   .field label{font-size:12px;color:var(--muted);font-weight:600}
   .field input{border:none;outline:none;font-size:18px;width:100%;margin-top:4px;background:transparent;color:var(--ink);font-weight:700}
-  .bigbtn{width:100%;border:none;border-radius:16px;padding:17px;color:#fff;font-size:16px;font-weight:800;
-          background:var(--grad);box-shadow:0 10px 24px rgba(0,194,203,.35)}
-  .bigbtn:disabled{opacity:.45;box-shadow:none}
+  .bigbtn{width:100%;border:none;border-radius:16px;padding:17px;color:#fff;font-size:16px;font-weight:800;background:var(--teal);box-shadow:0 10px 24px rgba(21,195,178,.35)}
   .amtkeys{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:14px}
-  .amtkeys button{background:#fff;border:none;border-radius:12px;padding:11px 4px;font-weight:700;font-size:13px;
-          box-shadow:var(--shadow);color:var(--ink)}
-
-  /* success */
+  .amtkeys button{background:#fff;border:none;border-radius:12px;padding:11px 4px;font-weight:700;font-size:13px;box-shadow:var(--shadow);color:var(--ink)}
   .ok{display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:10px;height:100%;padding:30px}
-  .okc{width:104px;height:104px;border-radius:50%;background:var(--grad);display:flex;align-items:center;justify-content:center;
-       box-shadow:0 14px 34px rgba(31,211,176,.4);animation:pop .4s cubic-bezier(.2,1.4,.4,1)}
+  .okc{width:104px;height:104px;border-radius:50%;background:var(--teal);display:flex;align-items:center;justify-content:center;box-shadow:0 14px 34px rgba(21,195,178,.4);animation:pop .4s cubic-bezier(.2,1.4,.4,1)}
   @keyframes pop{0%{transform:scale(.4);opacity:0}100%{transform:scale(1);opacity:1}}
-  .ok b{font-size:21px;font-weight:800}
-  .ok p{color:var(--muted)}
+  .ok b{font-size:21px;font-weight:800}.ok p{color:var(--muted)}
   .okc svg{width:54px;height:54px;stroke-dasharray:60;stroke-dashoffset:60;animation:draw .5s .2s forwards}
   @keyframes draw{to{stroke-dashoffset:0}}
 
-  /* scanner */
   .scan{background:#0b1620;color:#fff}
   .scanbody{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:26px}
   .frame{width:230px;height:230px;border-radius:28px;position:relative}
-  .frame::before,.frame::after{content:"";position:absolute;width:46px;height:46px;border:4px solid var(--aqua)}
-  .frame .c1{position:absolute;top:0;left:0;width:46px;height:46px;border-top:4px solid var(--aqua);border-left:4px solid var(--aqua);border-radius:14px 0 0 0}
-  .frame .c2{position:absolute;top:0;right:0;width:46px;height:46px;border-top:4px solid var(--aqua);border-right:4px solid var(--aqua);border-radius:0 14px 0 0}
-  .frame .c3{position:absolute;bottom:0;left:0;width:46px;height:46px;border-bottom:4px solid var(--aqua);border-left:4px solid var(--aqua);border-radius:0 0 0 14px}
-  .frame .c4{position:absolute;bottom:0;right:0;width:46px;height:46px;border-bottom:4px solid var(--aqua);border-right:4px solid var(--aqua);border-radius:0 0 14px 0}
-  .frame::before,.frame::after{display:none}
+  .frame span[class^=c]{position:absolute;width:46px;height:46px}
+  .frame .c1{top:0;left:0;border-top:4px solid var(--aqua);border-left:4px solid var(--aqua);border-radius:14px 0 0 0}
+  .frame .c2{top:0;right:0;border-top:4px solid var(--aqua);border-right:4px solid var(--aqua);border-radius:0 14px 0 0}
+  .frame .c3{bottom:0;left:0;border-bottom:4px solid var(--aqua);border-left:4px solid var(--aqua);border-radius:0 0 0 14px}
+  .frame .c4{bottom:0;right:0;border-bottom:4px solid var(--aqua);border-right:4px solid var(--aqua);border-radius:0 0 14px 0}
   .laser{position:absolute;left:8px;right:8px;height:3px;background:var(--aqua);box-shadow:0 0 14px var(--aqua);border-radius:3px;top:8px;animation:scan 2.1s ease-in-out infinite}
   @keyframes scan{0%,100%{top:8px}50%{top:218px}}
   .scantabs{display:flex;gap:8px;background:rgba(255,255,255,.1);border-radius:14px;padding:5px}
@@ -170,144 +169,179 @@
   .myqr{width:210px;height:210px;background:#fff;border-radius:20px;padding:12px;display:none}
   #qrcanvas{width:100%;height:100%;image-rendering:pixelated}
 
-  /* ---------- Bottom nav ---------- */
-  .nav{position:absolute;left:0;right:0;bottom:0;background:#fff;border-top:1px solid var(--line);
-       display:flex;justify-content:space-around;align-items:flex-end;padding:8px 6px calc(var(--safe-bot) + 8px);z-index:30}
-  .nav button{background:none;border:none;display:flex;flex-direction:column;align-items:center;gap:3px;
-       font-size:10.5px;font-weight:600;color:var(--muted);flex:1;padding-top:6px}
+  /* ============ bottom nav ============ */
+  .nav{position:absolute;left:0;right:0;bottom:0;background:#fff;border-top:1px solid #E4E8EE;
+       display:flex;justify-content:space-around;padding:8px 4px calc(var(--safe-bot) + 8px);z-index:30}
+  .nav button{background:none;border:none;display:flex;flex-direction:column;align-items:center;gap:4px;
+       font-size:10px;font-weight:600;color:var(--muted);flex:1;padding-top:4px}
   .nav button svg{width:24px;height:24px}
   .nav button.on{color:var(--aqua)}
-  .nav .fab{margin-top:-30px}
-  .nav .fab .ic{width:58px;height:58px;border-radius:50%;background:var(--grad);display:flex;align-items:center;justify-content:center;
-       box-shadow:0 10px 22px rgba(0,194,203,.45);margin-bottom:2px}
-  .nav .fab .ic svg{width:28px;height:28px}
-  .page{display:none}
-  .page.on{display:block}
 </style>
 </head>
 <body>
 <div id="app">
-
-  <!-- ===== HOME ===== -->
   <div class="scroll">
+
+    <!-- ===================== HOME ===================== -->
     <div class="page on" id="p-home">
-      <div class="hdr">
-        <div class="ava">SS</div>
-        <div class="hi"><small data-t="hi">Assalomu alaykum</small><b>Sunnatulla S.</b></div>
-        <div class="sp"></div>
-        <button class="iconbtn lng" id="lngBtn">UZ</button>
-        <button class="iconbtn" onclick="go('history')"><span class="dot"></span>
-          <svg viewBox="0 0 24 24" fill="none" stroke="#0E1726" stroke-width="2" stroke-linecap="round"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg>
-        </button>
-      </div>
-
-      <div class="cards">
-        <div class="pcard g1">
-          <div class="chip"></div>
-          <div class="plus" onclick="toast('topup')">+</div>
-          <div class="wm">Payme</div>
-          <div class="bal" data-t="balance">Balans</div>
-          <div class="amt">1 250 000 <span style="font-size:15px">so'm</span></div>
-          <div class="num">•••• •••• •••• 4471</div>
+      <div class="teal">
+        <div class="thdr">
+          <div class="ava" onclick="go('profile')">JN</div>
+          <div class="sp"></div>
+          <button class="lngp" id="lngBtn">UZ</button>
+          <button class="ic-t" onclick="go('services')">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4-4"/></svg></button>
+          <button class="ic-t" onclick="go('history')">
+            <span class="nbadge">3</span>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg></button>
         </div>
-        <div class="pcard g2">
-          <div class="chip"></div>
-          <div class="plus" onclick="toast('topup')">+</div>
-          <div class="wm">UZCARD</div>
-          <div class="bal" data-t="balance">Balans</div>
-          <div class="amt">340 500 <span style="font-size:15px">so'm</span></div>
-          <div class="num">•••• •••• •••• 8829</div>
+
+        <div class="redpill" data-t="cardwarn">Ayrim kartalarning balansi mavjud emas</div>
+        <div class="baltitle" data-t="totalbal">Umumiy balans</div>
+        <div class="balrow">
+          <span class="eye" onclick="toggleBal()"><svg id="eyeIc" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7z"/><circle cx="12" cy="12" r="3"/><path id="eyeSlash" d="M3 3l18 18" style="display:none"/></svg></span>
+          <b id="balAmt">340 608</b><span class="cur">so'm</span>
+        </div>
+        <div class="balsub"><span data-t="spend">Bu oydagi chiqim</span> - 0 so'm</div>
+
+        <div class="circles">
+          <button class="circ" onclick="go('cards')">
+            <span class="cc"><span class="warn">!</span>
+              <svg viewBox="0 0 24 24" fill="none" stroke="#15C3B2" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="3"/><path d="M2 10h20"/></svg></span>
+            <span data-t="mycards">Kartalarim</span></button>
+          <button class="circ" onclick="toast('soon')">
+            <span class="cc">
+              <svg viewBox="0 0 24 24" fill="none" stroke="#15C3B2" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="12" r="4.5"/><circle cx="16" cy="12" r="4.5"/></svg></span>
+            <span>Payme GO</span></button>
+          <button class="circ" onclick="go('qr')">
+            <span class="cc">
+              <svg viewBox="0 0 24 24" fill="none" stroke="#15C3B2" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8V6a2 2 0 0 1 2-2h2M16 4h2a2 2 0 0 1 2 2v2M20 16v2a2 2 0 0 1-2 2h-2M8 20H6a2 2 0 0 1-2-2v-2"/><path d="M3 12h18"/></svg></span>
+            <span data-t="qrpay">QR to'lov</span></button>
         </div>
       </div>
 
-      <div class="quick">
-        <button class="qa" onclick="openTransfer()">
-          <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="#00C2CB" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 7h11M7 7l4-4M7 7l4 4"/><path d="M17 17H6M17 17l-4 4M17 17l-4-4"/></svg></span>
-          <span data-t="transfer">O'tkazma</span></button>
-        <button class="qa" onclick="go('pay')">
-          <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="#00C2CB" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="3"/><path d="M2 10h20"/></svg></span>
-          <span data-t="payment">To'lov</span></button>
-        <button class="qa" onclick="go('qr')">
-          <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="#00C2CB" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><path d="M14 14h3v3M21 14v.01M14 21h3M21 18v3"/></svg></span>
-          <span data-t="qr">QR</span></button>
-        <button class="qa" onclick="toast('topup')">
-          <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="#00C2CB" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg></span>
-          <span data-t="topup">To'ldirish</span></button>
-      </div>
+      <div class="sheet">
+        <div class="notif" id="notif">
+          <span class="melogo">me</span>
+          <div class="nx">
+            <div class="ntop"><span>03.04.25 09:00</span><span class="close" onclick="document.getElementById('notif').style.display='none'">×</span></div>
+            <p data-t="notiftext">Mobil aloqa uchun to'lashni unutmang 😖</p>
+            <span class="nbtn" onclick="openPay('mobile')" data-t="paynow">To'lash</span>
+          </div>
+        </div>
 
-      <div class="search">
-        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="#8A94A6" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4-4"/></svg>
-        <input data-tp="search" placeholder="Qidirish" onfocus="go('pay')">
-      </div>
+        <div class="promo" onclick="toast('soon')">
+          <span class="gift">🎁</span>
+          <b data-t="promo">10 ta kvartira — bittasi sizniki bo'lishi mumkin!</b>
+        </div>
 
-      <div class="sec"><h3 data-t="payments">To'lovlar</h3><a onclick="go('pay')" data-t="all">Hammasi</a></div>
-      <div class="grid" id="homeGrid"></div>
-      <div style="height:10px"></div>
+        <div class="sec"><h3 data-t="finserv">Moliyaviy xizmatlar</h3></div>
+        <div class="two">
+          <button class="svc" onclick="go('transfer')">
+            <span class="ic" style="background:#E5FAF7"><svg viewBox="0 0 24 24" fill="none" stroke="#15C3B2" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="6" width="20" height="13" rx="3"/><path d="M12 14V3M12 3l-3 3M12 3l3 3"/></svg></span>
+            <span data-t="moneytransfer">Pul o'tkazish</span></button>
+          <button class="svc" onclick="toast('soon')">
+            <span class="ic" style="background:#EFEAFE"><svg viewBox="0 0 24 24" fill="none" stroke="#7B61FF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="3"/><path d="M3 10h18M7 15h4"/></svg></span>
+            <span data-t="tbccredit">TBC Bankdan kredit</span></button>
+        </div>
+
+        <div class="sec"><h3 data-t="savedpay">Saqlangan to'lovlar</h3><a onclick="go('services')" data-t="more">Yana</a></div>
+        <div class="grid" id="homeGrid"></div>
+        <div style="height:8px"></div>
+      </div>
     </div>
 
-    <!-- ===== PAYMENTS ===== -->
+    <!-- ===================== TRANSFER ===================== -->
+    <div class="page" id="p-transfer">
+      <div class="phdr"><b data-t="transfer">O'tkazma</b></div>
+      <div class="sbody" style="padding-top:8px">
+        <div class="field"><label data-t="cardnum">Karta raqami</label>
+          <input id="t_dest" inputmode="numeric" placeholder="8600 •••• •••• ••••"></div>
+        <div class="field"><label data-t="amount">Summa</label>
+          <input id="t_amt" inputmode="numeric" placeholder="0" oninput="this.value=fmtIn(this.value)"></div>
+        <div class="amtkeys">
+          <button onclick="qa('t_amt',50000)">50 000</button><button onclick="qa('t_amt',100000)">100 000</button>
+          <button onclick="qa('t_amt',200000)">200 000</button><button onclick="qa('t_amt',500000)">500 000</button>
+        </div>
+        <div class="field" style="display:flex;align-items:center;gap:12px">
+          <span style="width:42px;height:30px;border-radius:7px;background:var(--teal)"></span>
+          <span><small style="color:var(--muted);font-size:11px" data-t="fromacc">Hisobdan</small><br><b>Payme •••• 4471</b></span>
+        </div>
+        <button class="bigbtn" onclick="payNow('t_amt')" data-t="send">Yuborish</button>
+      </div>
+    </div>
+
+    <!-- ===================== TO'LOV (payments) ===================== -->
     <div class="page" id="p-pay">
-      <div class="hdr"><b style="font-size:20px" data-t="payments">To'lovlar</b></div>
+      <div class="phdr"><b data-t="payment">To'lov</b></div>
       <div class="search">
-        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="#8A94A6" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4-4"/></svg>
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="#9099A8" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4-4"/></svg>
         <input id="paySearch" data-tp="search" placeholder="Qidirish" oninput="renderPay()">
       </div>
       <div class="plist" id="payList"></div>
     </div>
 
-    <!-- ===== HISTORY ===== -->
+    <!-- ===================== SERVISLAR ===================== -->
+    <div class="page" id="p-services">
+      <div class="phdr"><b data-t="services">Servislar</b></div>
+      <div class="search">
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="#9099A8" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4-4"/></svg>
+        <input id="svcSearch" data-tp="search" placeholder="Qidirish" oninput="renderServices()">
+      </div>
+      <div style="padding:10px 12px"><div class="grid" id="svcGrid"></div></div>
+    </div>
+
+    <!-- ===================== KIRIM-CHIQIM ===================== -->
     <div class="page" id="p-history">
-      <div class="hdr"><b style="font-size:20px" data-t="history">Tarix</b></div>
+      <div class="phdr"><b data-t="inout">Kirim-chiqim</b></div>
       <div id="histWrap"></div>
     </div>
 
-    <!-- ===== PROFILE ===== -->
+    <!-- ===================== CARDS ===================== -->
+    <div class="page" id="p-cards">
+      <div class="phdr"><b data-t="mycards">Kartalarim</b></div>
+      <div style="padding:10px 16px" id="cardsWrap"></div>
+    </div>
+
+    <!-- ===================== PROFILE ===================== -->
     <div class="page" id="p-profile">
-      <div class="phead">
-        <div class="ava">SS</div>
-        <b>Sunnatulla Samandarov</b>
-        <small>+998 90 123 45 67</small>
-      </div>
+      <div class="phead"><div class="ava">JN</div><b>Sunnatulla Samandarov</b><small>+998 90 123 45 67</small></div>
       <div class="menu" id="profMenu"></div>
       <div class="ver" data-t="ver">Payme demo · versiya 1.0.0</div>
     </div>
   </div>
 
-  <!-- ===== BOTTOM NAV ===== -->
+  <!-- ===================== BOTTOM NAV ===================== -->
   <div class="nav" id="nav">
     <button class="on" data-nav="home" onclick="go('home')">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-8 9 8"/><path d="M5 10v10h14V10"/></svg>
       <span data-t="home">Asosiy</span></button>
+    <button data-nav="transfer" onclick="go('transfer')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 7h12M7 7l3-3M7 7l3 3"/><path d="M17 17H5M17 17l-3 3M17 17l-3-3"/></svg>
+      <span data-t="transfer">O'tkazma</span></button>
     <button data-nav="pay" onclick="go('pay')">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="3"/><path d="M2 10h20"/></svg>
-      <span data-t="payments">To'lovlar</span></button>
-    <button class="fab" data-nav="qr" onclick="go('qr')">
-      <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><path d="M14 14h3v3M21 14v.01M14 21h3M21 18v3"/></svg></span>
-      <span data-t="qr" style="color:var(--aqua)">QR</span></button>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7h13a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><path d="M16 11h4v4h-4a2 2 0 0 1 0-4z"/></svg>
+      <span data-t="payment">To'lov</span></button>
+    <button data-nav="services" onclick="go('services')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>
+      <span data-t="services">Servislar</span></button>
     <button data-nav="history" onclick="go('history')">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 4v4h4"/><path d="M12 8v4l3 2"/></svg>
-      <span data-t="history">Tarix</span></button>
-    <button data-nav="profile" onclick="go('profile')">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/></svg>
-      <span data-t="profile">Profil</span></button>
+      <span data-t="inout">Kirim-chiqim</span></button>
   </div>
 
-  <!-- ===== TRANSFER / PAY FLOW SCREEN ===== -->
+  <!-- ===================== FLOW SCREEN ===================== -->
   <div class="screen" id="flow">
-    <div class="sbar"><button onclick="closeFlow()">
-      <svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="#0E1726" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button>
-      <span id="flowTitle">—</span></div>
+    <div class="sbar"><button onclick="closeFlow()"><svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="#0E1726" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button><span id="flowTitle">—</span></div>
     <div class="sbody" id="flowBody"></div>
   </div>
 
-  <!-- ===== QR SCANNER SCREEN ===== -->
+  <!-- ===================== QR SCREEN ===================== -->
   <div class="screen scan" id="qr">
-    <div class="sbar"><button onclick="go('home')">
-      <svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button>
-      <span style="color:#fff" data-t="qrpay">QR to'lov</span></div>
+    <div class="sbar"><button onclick="go('home')"><svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button><span style="color:#fff" data-t="qrpay">QR to'lov</span></div>
     <div class="scanbody">
       <div class="scantabs">
-        <button class="on" id="tabScan" onclick="qrTab('scan')" data-t="scanqr">Skanerlash</button>
+        <button class="on" id="tabScan" onclick="qrTab('scan')" data-t="scanbtn">Skanerlash</button>
         <button id="tabMine" onclick="qrTab('mine')" data-t="myqr">Mening QR</button>
       </div>
       <div class="frame" id="qrFrame"><span class="c1"></span><span class="c2"></span><span class="c3"></span><span class="c4"></span><div class="laser"></div></div>
@@ -315,32 +349,37 @@
       <p style="color:rgba(255,255,255,.7);font-size:14px;text-align:center;padding:0 30px" id="qrHint" data-t="scanhint">To'lov uchun QR kodni ramka ichiga joylang</p>
     </div>
   </div>
-
 </div>
 
 <script>
 /* ---------------- i18n ---------------- */
 const I = {
-  uz:{hi:"Assalomu alaykum",balance:"Balans",transfer:"O'tkazma",payment:"To'lov",qr:"QR",topup:"To'ldirish",
-    payments:"To'lovlar",all:"Hammasi",home:"Asosiy",history:"Tarix",profile:"Profil",search:"Qidirish",
-    qrpay:"QR to'lov",scanqr:"Skanerlash",myqr:"Mening QR",scanhint:"To'lov uchun QR kodni ramka ichiga joylang",
-    ver:"Payme demo · versiya 1.0.0",pay:"To'lash",amount:"Summa",phone:"Telefon raqami",card:"Karta raqami",
-    from:"Hisobdan",enteramt:"Summani kiriting",enterphone:"Raqamni kiriting",done:"To'lov bajarildi",
-    donesub:"Tranzaksiya muvaffaqiyatli yakunlandi",todo:"Bugun",yest:"Kecha",
-    topupd:"Hisobni to'ldirish hozircha demo rejimida",close:"Yopish",
-    m_cards:"Mening kartalarim",m_sec:"Xavfsizlik",m_lang:"Til",m_help:"Yordam",m_set:"Sozlamalar"},
-  ru:{hi:"Здравствуйте",balance:"Баланс",transfer:"Перевод",payment:"Платёж",qr:"QR",topup:"Пополнить",
-    payments:"Платежи",all:"Все",home:"Главная",history:"История",profile:"Профиль",search:"Поиск",
-    qrpay:"QR оплата",scanqr:"Сканировать",myqr:"Мой QR",scanhint:"Наведите камеру на QR код для оплаты",
-    ver:"Payme demo · версия 1.0.0",pay:"Оплатить",amount:"Сумма",phone:"Номер телефона",card:"Номер карты",
-    from:"Со счёта",enteramt:"Введите сумму",enterphone:"Введите номер",done:"Платёж выполнен",
-    donesub:"Транзакция успешно завершена",todo:"Сегодня",yest:"Вчера",
-    topupd:"Пополнение пока в демо-режиме",close:"Закрыть",
-    m_cards:"Мои карты",m_sec:"Безопасность",m_lang:"Язык",m_help:"Помощь",m_set:"Настройки"}
+  uz:{cardwarn:"Ayrim kartalarning balansi mavjud emas",totalbal:"Umumiy balans",spend:"Bu oydagi chiqim",
+    mycards:"Kartalarim",qrpay:"QR to'lov",notiftext:"Mobil aloqa uchun to'lashni unutmang 😖",paynow:"To'lash",
+    promo:"10 ta kvartira — bittasi sizniki bo'lishi mumkin!",finserv:"Moliyaviy xizmatlar",
+    moneytransfer:"Pul o'tkazish",tbccredit:"TBC Bankdan kredit",savedpay:"Saqlangan to'lovlar",more:"Yana",
+    home:"Asosiy",transfer:"O'tkazma",payment:"To'lov",services:"Servislar",inout:"Kirim-chiqim",
+    search:"Qidirish",cardnum:"Karta raqami",amount:"Summa",fromacc:"Hisobdan",send:"Yuborish",pay:"To'lash",
+    qrpaytitle:"QR to'lov",scanbtn:"Skanerlash",myqr:"Mening QR",scanhint:"To'lov uchun QR kodni ramka ichiga joylang",
+    done:"To'lov bajarildi",donesub:"Tranzaksiya muvaffaqiyatli yakunlandi",close:"Yopish",
+    todo:"Bugun",yest:"Kecha",ver:"Payme demo · versiya 1.0.0",soon:"Bu bo'lim demoda mavjud emas",
+    phone:"Telefon raqami",m_cards:"Mening kartalarim",m_sec:"Xavfsizlik",m_lang:"Til",m_help:"Yordam",m_set:"Sozlamalar",
+    available:"mavjud"},
+  ru:{cardwarn:"Баланс некоторых карт недоступен",totalbal:"Общий баланс",spend:"Расход за этот месяц",
+    mycards:"Мои карты",qrpay:"QR оплата",notiftext:"Не забудьте оплатить мобильную связь 😖",paynow:"Оплатить",
+    promo:"10 квартир — одна может стать вашей!",finserv:"Финансовые услуги",
+    moneytransfer:"Перевод денег",tbccredit:"Кредит от TBC Bank",savedpay:"Сохранённые платежи",more:"Ещё",
+    home:"Главная",transfer:"Перевод",payment:"Платёж",services:"Сервисы",inout:"Доходы-расходы",
+    search:"Поиск",cardnum:"Номер карты",amount:"Сумма",fromacc:"Со счёта",send:"Отправить",pay:"Оплатить",
+    qrpaytitle:"QR оплата",scanbtn:"Сканировать",myqr:"Мой QR",scanhint:"Наведите камеру на QR код для оплаты",
+    done:"Платёж выполнен",donesub:"Транзакция успешно завершена",close:"Закрыть",
+    todo:"Сегодня",yest:"Вчера",ver:"Payme demo · версия 1.0.0",soon:"Раздел недоступен в демо",
+    phone:"Номер телефона",m_cards:"Мои карты",m_sec:"Безопасность",m_lang:"Язык",m_help:"Помощь",m_set:"Настройки",
+    available:"доступен"}
 };
 let lang = localStorage.getItem('payme_lang') || 'uz';
+let balHidden = false;
 
-/* category data: key -> {uz,ru,color,bg,icon} */
 const ICN = {
   mobile:'<path d="M7 2h10a2 2 0 0 1 2 2v16a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2z"/><path d="M11 18h2"/>',
   net:'<circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c3 3 3 15 0 18M12 3c-3 3-3 15 0 18"/>',
@@ -356,7 +395,7 @@ const ICN = {
   charity:'<path d="M12 21s-7-4.5-9.5-8.5C.8 9.4 2.5 6 6 6c2 0 3 1 4 2 1-1 2-2 4-2 3.5 0 5.2 3.4 3.5 6.5C19 16.5 12 21 12 21z"/>',
 };
 const CATS = [
-  ['mobile',{uz:"Mobil aloqa",ru:"Мобильная связь"},'#00C2CB','#E6FBF8'],
+  ['mobile',{uz:"Mobil aloqa",ru:"Мобильная связь"},'#15C3B2','#E5FAF7'],
   ['net',{uz:"Internet",ru:"Интернет"},'#5B6CF6','#ECEDFE'],
   ['util',{uz:"Kommunal",ru:"Коммунальные"},'#FF8A3D','#FFF1E6'],
   ['tv',{uz:"Televideniye",ru:"Телевидение"},'#9A6BFF','#F2ECFF'],
@@ -369,49 +408,47 @@ const CATS = [
   ['shop',{uz:"Bozor",ru:"Маркет"},'#F59E0B','#FEF4E2'],
   ['charity',{uz:"Xayriya",ru:"Благотворительность"},'#EC4899','#FCE8F3'],
 ];
-
 function catIcon(key,color){return `<svg viewBox="0 0 24 24" fill="none" stroke="${color}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${ICN[key]}</svg>`;}
 
-/* ---------------- transactions ---------------- */
 const TX = [
   {d:'todo',k:'mobile',uz:'Beeline to\'ldirish',ru:'Пополнение Beeline',sub:'+998 90 123 45 67',v:-25000},
   {d:'todo',k:'transfer',uz:'O\'tkazma · Aziz',ru:'Перевод · Азиз',sub:'•••• 1102',v:-150000},
   {d:'todo',k:'in',uz:'Pul tushdi · Dilnoza',ru:'Поступление · Дилноза',sub:'•••• 7745',v:+300000},
   {d:'yest',k:'util',uz:'Hududgaz to\'lovi',ru:'Оплата Hududgaz',sub:'L/s 880412',v:-78000},
-  {d:'yest',k:'tv',uz:'UZONLINE TV',ru:'UZONLINE TV',sub:'Tarif: Premium',v:-45000},
+  {d:'yest',k:'tv',uz:'UZONLINE TV',ru:'UZONLINE TV',sub:'Premium',v:-45000},
   {d:'yest',k:'net',uz:'Uztelecom internet',ru:'Uztelecom интернет',sub:'•••• 4471',v:-99000},
-  {d:'yest',k:'shop',uz:'Korzinka.uz',ru:'Korzinka.uz',sub:'QR to\'lov',v:-212400},
+  {d:'yest',k:'shop',uz:'Korzinka.uz',ru:'Korzinka.uz',sub:'QR',v:-212400},
 ];
 const TXICN={transfer:['#5B6CF6','#ECEDFE','<path d="M7 7h11M7 7l4-4M7 7l4 4"/><path d="M17 17H6M17 17l-4 4M17 17l-4-4"/>'],
   in:['#16C784','#E6F9EF','<path d="M12 5v14M12 19l-6-6M12 19l6-6"/>']};
 
-/* ---------------- render ---------------- */
+const MYCARDS=[
+  {name:'Payme',num:'4471',bal:'1 250 000',grad:'var(--teal)'},
+  {name:'UZCARD',num:'8829',bal:'340 500',grad:'linear-gradient(135deg,#5B6CF6,#9A6BFF)'},
+];
+
 function t(k){return (I[lang][k]||k);}
 function fmt(n){return n.toLocaleString('ru-RU').replace(/,/g,' ');}
 
 function applyI18n(){
   document.querySelectorAll('[data-t]').forEach(e=>e.textContent=t(e.dataset.t));
   document.querySelectorAll('[data-tp]').forEach(e=>e.placeholder=t(e.dataset.tp));
-  document.getElementById('lngBtn').textContent = lang.toUpperCase();
-  document.documentElement.lang = lang;
+  document.getElementById('lngBtn').textContent=lang.toUpperCase();
+  document.documentElement.lang=lang;
 }
-
 function renderGrid(el,limit){
-  const list = limit?CATS.slice(0,8):CATS;
-  el.innerHTML = list.map(([k,nm,c,bg])=>`
-    <button class="cat" onclick="openPay('${k}')">
-      <span class="ic" style="background:${bg}">${catIcon(k,c)}</span>
-      <span>${nm[lang]}</span></button>`).join('');
+  const list=limit?CATS.slice(0,8):CATS;
+  el.innerHTML=list.map(([k,nm,c,bg])=>`<button class="cat" onclick="openPay('${k}')"><span class="ic" style="background:${bg}">${catIcon(k,c)}</span><span>${nm[lang]}</span></button>`).join('');
+}
+function renderServices(){
+  const q=(document.getElementById('svcSearch').value||'').toLowerCase();
+  const list=CATS.filter(([k,nm])=>nm.uz.toLowerCase().includes(q)||nm.ru.toLowerCase().includes(q));
+  document.getElementById('svcGrid').innerHTML=list.map(([k,nm,c,bg])=>`<button class="cat" onclick="openPay('${k}')"><span class="ic" style="background:${bg}">${catIcon(k,c)}</span><span>${nm[lang]}</span></button>`).join('');
 }
 function renderPay(){
   const q=(document.getElementById('paySearch').value||'').toLowerCase();
   const list=CATS.filter(([k,nm])=>nm.uz.toLowerCase().includes(q)||nm.ru.toLowerCase().includes(q));
-  document.getElementById('payList').innerHTML=list.map(([k,nm,c,bg])=>`
-    <button class="prow" onclick="openPay('${k}')">
-      <span class="ic" style="background:${bg}">${catIcon(k,c)}</span>
-      <span><b>${nm[lang]}</b></span>
-      <span class="arr"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></span>
-    </button>`).join('');
+  document.getElementById('payList').innerHTML=list.map(([k,nm,c,bg])=>`<button class="prow" onclick="openPay('${k}')"><span class="ic" style="background:${bg}">${catIcon(k,c)}</span><span><b>${nm[lang]}</b></span><span class="arr"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></span></button>`).join('');
 }
 function renderHist(){
   const groups={};TX.forEach(x=>{(groups[x.d]=groups[x.d]||[]).push(x)});
@@ -422,14 +459,20 @@ function renderHist(){
     groups[d].forEach(x=>{
       let c,bg,ic;
       if(TXICN[x.k]){[c,bg,ic]=TXICN[x.k];}else{const cd=CATS.find(z=>z[0]===x.k);c=cd[2];bg=cd[3];ic=ICN[x.k];}
-      const icon=`<svg viewBox="0 0 24 24" fill="none" stroke="${c}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${ic}</svg>`;
-      html+=`<div class="tx"><span class="ic" style="background:${bg}">${icon}</span>
-        <span><b>${x[lang]}</b><small>${x.sub}</small></span>
-        <span class="val ${x.v>0?'pos':''}">${x.v>0?'+':'−'} ${fmt(Math.abs(x.v))}</span></div>`;
+      html+=`<div class="tx"><span class="ic" style="background:${bg}"><svg viewBox="0 0 24 24" fill="none" stroke="${c}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${ic}</svg></span><span><b>${x[lang]}</b><small>${x.sub}</small></span><span class="val ${x.v>0?'pos':''}">${x.v>0?'+':'−'} ${fmt(Math.abs(x.v))}</span></div>`;
     });
     html+='</div>';
   });
   document.getElementById('histWrap').innerHTML=html;
+}
+function renderCards(){
+  document.getElementById('cardsWrap').innerHTML=MYCARDS.map(c=>`
+    <div style="background:${c.grad};border-radius:20px;padding:18px;color:#fff;margin-bottom:12px;box-shadow:0 10px 24px rgba(21,195,178,.25)">
+      <div style="font-weight:800;font-size:17px">${c.name}</div>
+      <div style="font-size:13px;opacity:.85;margin-top:14px">${t('totalbal')}</div>
+      <div style="font-size:23px;font-weight:800">${c.bal} <span style="font-size:13px">so'm</span></div>
+      <div style="margin-top:12px;letter-spacing:2px;opacity:.9">•••• •••• •••• ${c.num}</div>
+    </div>`).join('');
 }
 function renderMenu(){
   const items=[
@@ -439,15 +482,9 @@ function renderMenu(){
     ['m_help','<circle cx="12" cy="12" r="9"/><path d="M9.5 9a2.5 2.5 0 1 1 3 2.4c-.7.3-1 .8-1 1.6M12 17h.01"/>',''],
     ['m_set','<circle cx="12" cy="12" r="3"/><path d="M19 12a7 7 0 0 0-.1-1l2-1.5-2-3.5-2.4 1a7 7 0 0 0-1.7-1L14.5 2h-5l-.3 2.5a7 7 0 0 0-1.7 1l-2.4-1-2 3.5L3.1 11a7 7 0 0 0 0 2l-2 1.5 2 3.5 2.4-1a7 7 0 0 0 1.7 1l.3 2.5h5l.3-2.5a7 7 0 0 0 1.7-1l2.4 1 2-3.5-2-1.5a7 7 0 0 0 .1-1z"/>',''],
   ];
-  document.getElementById('profMenu').innerHTML=items.map(([k,ic,tag])=>`
-    <button class="mrow" onclick="${k==='m_lang'?'toggleLang()':'toast(\\'soon\\')'}">
-      <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="#00C2CB" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${ic}</svg></span>
-      ${t(k)}
-      ${tag?`<span class="tag">${tag}</span>`:'<span class="arr"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></span>'}
-    </button>`).join('');
+  document.getElementById('profMenu').innerHTML=items.map(([k,ic,tag])=>`<button class="mrow" onclick="${k==='m_lang'?'toggleLang()':(k==='m_cards'?'go(\\'cards\\')':'toast(\\'soon\\')')}"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="#15C3B2" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${ic}</svg></span>${t(k)}${tag?`<span class="tag">${tag}</span>`:'<span class="arr"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></span>'}</button>`).join('');
 }
-
-function renderAll(){applyI18n();renderGrid(document.getElementById('homeGrid'),true);renderPay();renderHist();renderMenu();}
+function renderAll(){applyI18n();renderGrid(document.getElementById('homeGrid'),true);renderServices();renderPay();renderHist();renderCards();renderMenu();}
 
 /* ---------------- navigation ---------------- */
 function go(name){
@@ -455,49 +492,44 @@ function go(name){
   if(name==='qr'){document.getElementById('qr').classList.add('show');return;}
   document.getElementById('qr').classList.remove('show');
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('on'));
-  const pg=document.getElementById('p-'+name); if(pg)pg.classList.add('on');
-  document.querySelectorAll('#nav button').forEach(b=>b.classList.toggle('on',b.dataset.nav===name));
+  const pg=document.getElementById('p-'+name);if(pg)pg.classList.add('on');
+  const navName=['home','transfer','pay','services','history'].includes(name)?name:'';
+  document.querySelectorAll('#nav button').forEach(b=>b.classList.toggle('on',b.dataset.nav===navName));
   document.querySelector('.scroll').scrollTop=0;
 }
 
-/* ---------------- flows ---------------- */
-let curAmount='';
-function openTransfer(){flowForm(t('transfer'),'phone');}
-function openPay(key){const cd=CATS.find(z=>z[0]===key);flowForm(cd[1][lang],'phone',key);}
+/* ---------------- balance ---------------- */
+function toggleBal(){
+  balHidden=!balHidden;
+  document.getElementById('balAmt').textContent=balHidden?'••• •••':'340 608';
+  document.getElementById('eyeSlash').style.display=balHidden?'block':'none';
+}
 
-function flowForm(title,kind,key){
-  curAmount='';
+/* ---------------- flows ---------------- */
+function openPay(key){const cd=CATS.find(z=>z[0]===key);flowForm(cd[1][lang]);}
+function flowForm(title){
   document.getElementById('flowTitle').textContent=title;
   document.getElementById('flowBody').innerHTML=`
-    <div class="field"><label>${kind==='card'?t('card'):t('phone')}</label>
-      <input id="f_dest" inputmode="numeric" placeholder="${kind==='card'?'8600 •••• •••• ••••':'+998 __ ___ __ __'}"></div>
-    <div class="field"><label>${t('amount')}</label>
-      <input id="f_amt" inputmode="numeric" placeholder="0" oninput="this.value=fmtIn(this.value)"></div>
-    <div class="amtkeys">
-      ${[10000,25000,50000,100000].map(a=>`<button onclick="setAmt(${a})">${fmt(a)}</button>`).join('')}
-    </div>
-    <div class="field" style="display:flex;align-items:center;gap:12px">
-      <span style="width:42px;height:30px;border-radius:7px;background:var(--grad)"></span>
-      <span><small style="color:var(--muted);font-size:11px">${t('from')}</small><br><b>Payme •••• 4471</b></span>
-    </div>
-    <button class="bigbtn" onclick="payNow()">${t('pay')}</button>`;
+    <div class="field"><label>${t('phone')}</label><input id="f_dest" inputmode="numeric" placeholder="+998 __ ___ __ __"></div>
+    <div class="field"><label>${t('amount')}</label><input id="f_amt" inputmode="numeric" placeholder="0" oninput="this.value=fmtIn(this.value)"></div>
+    <div class="amtkeys">${[10000,25000,50000,100000].map(a=>`<button onclick="qa('f_amt',${a})">${fmt(a)}</button>`).join('')}</div>
+    <div class="field" style="display:flex;align-items:center;gap:12px"><span style="width:42px;height:30px;border-radius:7px;background:var(--teal)"></span><span><small style="color:var(--muted);font-size:11px">${t('fromacc')}</small><br><b>Payme •••• 4471</b></span></div>
+    <button class="bigbtn" onclick="payNow('f_amt')">${t('pay')}</button>`;
   document.getElementById('flow').classList.add('show');
   setTimeout(()=>document.getElementById('f_dest').focus(),300);
 }
 function fmtIn(v){v=v.replace(/\D/g,'');return v?Number(v).toLocaleString('ru-RU').replace(/,/g,' '):'';}
-function setAmt(a){const el=document.getElementById('f_amt');el.value=fmt(a);}
-function payNow(){
-  const amt=(document.getElementById('f_amt').value||'').replace(/\D/g,'');
-  if(!amt||amt==='0'){const e=document.getElementById('f_amt');e.focus();e.parentElement.style.boxShadow='0 0 0 2px #FF5B5B';setTimeout(()=>e.parentElement.style.boxShadow='var(--shadow)',900);return;}
-  document.getElementById('flowBody').innerHTML=`
-    <div class="ok">
-      <div class="okc"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 13l4 4L19 7"/></svg></div>
-      <b>${t('done')}</b>
-      <div style="font-size:24px;font-weight:800;margin:4px 0">− ${fmt(Number(amt))} so'm</div>
-      <p>${t('donesub')}</p>
-      <button class="bigbtn" style="margin-top:18px;max-width:240px" onclick="closeFlow()">${t('close')}</button>
-    </div>`;
+function qa(id,a){document.getElementById(id).value=fmt(a);}
+function payNow(amtId){
+  const el=document.getElementById(amtId);const amt=(el.value||'').replace(/\D/g,'');
+  if(!amt||amt==='0'){el.focus();el.parentElement.style.boxShadow='0 0 0 2px #FF5B5B';setTimeout(()=>el.parentElement.style.boxShadow='var(--shadow)',900);return;}
+  const html=`<div class="ok"><div class="okc"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 13l4 4L19 7"/></svg></div><b>${t('done')}</b><div style="font-size:24px;font-weight:800;margin:4px 0">− ${fmt(Number(amt))} so'm</div><p>${t('donesub')}</p><button class="bigbtn" style="margin-top:18px;max-width:240px" onclick="afterPay('${amtId}')">${t('close')}</button></div>`;
+  if(amtId==='t_amt'){ // transfer page -> show overlay success
+    document.getElementById('flowTitle').textContent=t('transfer');
+    document.getElementById('flowBody').innerHTML=html;document.getElementById('flow').classList.add('show');
+  }else{document.getElementById('flowBody').innerHTML=html;}
 }
+function afterPay(id){closeFlow();const el=document.getElementById(id);if(el)el.value='';if(id==='t_amt'){const d=document.getElementById('t_dest');if(d)d.value='';}}
 function closeFlow(){document.getElementById('flow').classList.remove('show');}
 
 /* ---------------- qr ---------------- */
@@ -512,11 +544,10 @@ function qrTab(which){
 function drawQR(){
   const cv=document.getElementById('qrcanvas'),x=cv.getContext('2d'),N=25,s=cv.width/N;
   x.fillStyle='#fff';x.fillRect(0,0,cv.width,cv.height);x.fillStyle='#0b1620';
-  // deterministic pseudo-random pattern
   let seed=7;const rnd=()=>{seed=(seed*1103515245+12345)&0x7fffffff;return seed/0x7fffffff;};
   for(let i=0;i<N;i++)for(let j=0;j<N;j++){if(rnd()>0.5)x.fillRect(j*s,i*s,s,s);}
-  const finder=(ox,oy)=>{x.fillStyle='#0b1620';x.fillRect(ox*s,oy*s,7*s,7*s);x.fillStyle='#fff';x.fillRect((ox+1)*s,(oy+1)*s,5*s,5*s);x.fillStyle='#0b1620';x.fillRect((ox+2)*s,(oy+2)*s,3*s,3*s);};
   x.fillStyle='#fff';x.fillRect(0,0,8*s,8*s);x.fillRect((N-8)*s,0,8*s,8*s);x.fillRect(0,(N-8)*s,8*s,8*s);
+  const finder=(ox,oy)=>{x.fillStyle='#0b1620';x.fillRect(ox*s,oy*s,7*s,7*s);x.fillStyle='#fff';x.fillRect((ox+1)*s,(oy+1)*s,5*s,5*s);x.fillStyle='#0b1620';x.fillRect((ox+2)*s,(oy+2)*s,3*s,3*s);};
   finder(0,0);finder(N-7,0);finder(0,N-7);
 }
 
@@ -524,15 +555,11 @@ function drawQR(){
 function toggleLang(){lang=lang==='uz'?'ru':'uz';localStorage.setItem('payme_lang',lang);renderAll();}
 document.getElementById('lngBtn').onclick=toggleLang;
 function toast(kind){
-  const msg=kind==='topup'?t('topupd'):(t('done'));
-  const el=document.createElement('div');
-  el.textContent=msg;
+  const el=document.createElement('div');el.textContent=t(kind);
   el.style.cssText='position:absolute;left:50%;bottom:110px;transform:translateX(-50%);background:#0E1726;color:#fff;padding:12px 20px;border-radius:14px;font-size:13px;font-weight:600;z-index:90;box-shadow:0 10px 30px rgba(0,0,0,.3);max-width:80%;text-align:center';
-  document.getElementById('app').appendChild(el);
-  setTimeout(()=>el.remove(),1900);
+  document.getElementById('app').appendChild(el);setTimeout(()=>el.remove(),1900);
 }
 
-/* init */
 renderAll();drawQR();
 </script>
 </body>
