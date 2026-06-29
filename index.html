@@ -90,6 +90,18 @@
   .svc .ic{width:38px;height:38px;border-radius:11px;display:flex;align-items:center;justify-content:center;flex:0 0 auto}
   .svc svg{width:21px;height:21px}
 
+  .saved{display:flex;gap:11px;overflow-x:auto;padding:0 0 4px;margin-bottom:18px;scroll-snap-type:x mandatory}
+  .saved::-webkit-scrollbar{display:none}
+  .scard{min-width:110px;background:#fff;border:none;border-radius:16px;box-shadow:var(--shadow);
+       padding:14px 8px 12px;text-align:center;flex:0 0 auto;scroll-snap-align:start}
+  .scard .lg{height:42px;display:flex;align-items:center;justify-content:center;margin-bottom:9px}
+  .scard b{font-size:13px;font-weight:700;display:block;color:var(--ink)}
+  .scard small{font-size:11px;color:var(--muted);display:block;margin-top:2px}
+  .charity{border-radius:18px;background:linear-gradient(115deg,#21D0BE,#15BCAB);color:#fff;
+       padding:20px 18px;margin-bottom:18px;display:flex;align-items:center;overflow:hidden;
+       box-shadow:0 8px 20px rgba(21,195,178,.28);position:relative;min-height:78px}
+  .charity .mtn{position:absolute;left:-8px;bottom:0}
+  .charity b{font-size:16px;font-weight:800;line-height:1.25;margin-left:92px}
   .grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px 4px}
   .cat{background:none;border:none;display:flex;flex-direction:column;align-items:center;gap:7px;
        padding:8px 2px;border-radius:16px;font-size:11px;font-weight:600;color:var(--ink);line-height:1.2}
@@ -238,15 +250,37 @@
         <div class="sec"><h3 data-t="finserv">Moliyaviy xizmatlar</h3></div>
         <div class="two">
           <button class="svc" onclick="go('transfer')">
-            <span class="ic" style="background:#E5FAF7"><svg viewBox="0 0 24 24" fill="none" stroke="#15C3B2" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="6" width="20" height="13" rx="3"/><path d="M12 14V3M12 3l-3 3M12 3l3 3"/></svg></span>
+            <span class="ic" style="background:transparent;width:42px;height:42px">
+              <svg viewBox="0 0 26 26" width="40" height="40" fill="none">
+                <rect x="1.5" y="7" width="16" height="12" rx="2.5" fill="#CFF4EF" stroke="#15C3B2" stroke-width="1.6"/>
+                <path d="M1.5 11h16" stroke="#15C3B2" stroke-width="1.6"/>
+                <circle cx="19" cy="8" r="6" fill="#FF7A1A"/>
+                <path d="M19 11V5M19 5l-2.4 2.4M19 5l2.4 2.4" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg></span>
             <span data-t="moneytransfer">Pul o'tkazish</span></button>
           <button class="svc" onclick="toast('soon')">
-            <span class="ic" style="background:#EFEAFE"><svg viewBox="0 0 24 24" fill="none" stroke="#7B61FF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="3"/><path d="M3 10h18M7 15h4"/></svg></span>
+            <span class="ic" style="background:transparent;width:42px;height:42px">
+              <svg viewBox="0 0 26 26" width="40" height="40" fill="none">
+                <rect x="7" y="3" width="16" height="11" rx="2.2" fill="#F472A6"/>
+                <rect x="9.5" y="6" width="7" height="2.2" rx="1.1" fill="#fff" opacity=".85"/>
+                <ellipse cx="9" cy="20.5" rx="6" ry="2.1" fill="#F4B400"/>
+                <ellipse cx="9" cy="18" rx="6" ry="2.1" fill="#FFCD3C"/>
+                <ellipse cx="9" cy="15.5" rx="6" ry="2.1" fill="#FFD95A"/>
+              </svg></span>
             <span data-t="tbccredit">TBC Bankdan kredit</span></button>
         </div>
 
-        <div class="sec"><h3 data-t="savedpay">Saqlangan to'lovlar</h3><a onclick="go('services')" data-t="more">Yana</a></div>
-        <div class="grid" id="homeGrid"></div>
+        <div class="sec"><h3 data-t="savedpay">Saqlangan to'lovlar</h3><a onclick="go('services')" data-t="all">Hammasi</a></div>
+        <div class="saved" id="savedWrap"></div>
+
+        <div class="charity" onclick="openPay('charity')">
+          <svg class="mtn" width="118" height="78" viewBox="0 0 118 78" fill="none">
+            <path d="M-4 78 L28 22 L46 50 L70 8 L96 50 L118 26 L118 78 Z" fill="#ffffff" opacity=".95"/>
+            <path d="M28 22 L40 40 L46 50 L52 40 Z" fill="#d9f7f2"/>
+            <path d="M70 8 L82 30 L96 50 L84 50 Z" fill="#d9f7f2"/>
+          </svg>
+          <b data-t="charity">Payme'da xayriya</b>
+        </div>
         <div style="height:8px"></div>
       </div>
     </div>
@@ -358,7 +392,8 @@ const I = {
     mycards:"Kartalarim",qrpay:"QR to'lov",notiftext:"Mobil aloqa uchun to'lashni unutmang 😖",paynow:"To'lash",
     promo:"10 ta kvartira — bittasi sizniki bo'lishi mumkin!",finserv:"Moliyaviy xizmatlar",
     moneytransfer:"Pul o'tkazish",tbccredit:"TBC Bankdan kredit",savedpay:"Saqlangan to'lovlar",more:"Yana",
-    home:"Asosiy",transfer:"O'tkazma",payment:"To'lov",services:"Servislar",inout:"Kirim-chiqim",
+    all:"Hammasi",mynum:"Mening raqamim",charity:"Payme'da xayriya",
+    home:"Asosiy",transfer:"O'tkazma",payment:"To'lov",services:"Servislar",inout:"Monitoring",
     search:"Qidirish",cardnum:"Karta raqami",amount:"Summa",fromacc:"Hisobdan",send:"Yuborish",pay:"To'lash",
     qrpaytitle:"QR to'lov",scanbtn:"Skanerlash",myqr:"Mening QR",scanhint:"To'lov uchun QR kodni ramka ichiga joylang",
     done:"To'lov bajarildi",donesub:"Tranzaksiya muvaffaqiyatli yakunlandi",close:"Yopish",
@@ -368,8 +403,9 @@ const I = {
   ru:{cardwarn:"Баланс некоторых карт недоступен",totalbal:"Общий баланс",spend:"Расход за этот месяц",
     mycards:"Мои карты",qrpay:"QR оплата",notiftext:"Не забудьте оплатить мобильную связь 😖",paynow:"Оплатить",
     promo:"10 квартир — одна может стать вашей!",finserv:"Финансовые услуги",
-    moneytransfer:"Перевод денег",tbccredit:"Кредит от TBC Bank",savedpay:"Сохранённые платежи",more:"Ещё",
-    home:"Главная",transfer:"Перевод",payment:"Платёж",services:"Сервисы",inout:"Доходы-расходы",
+    moneytransfer:"Перевести средства",tbccredit:"Кредит от TBC Bank",savedpay:"Сохранённые платежи",more:"Ещё",
+    all:"Все",mynum:"Мой номер",charity:"Благотворительность в Payme",
+    home:"Главная",transfer:"Перевод",payment:"Платёж",services:"Сервисы",inout:"Мониторинг",
     search:"Поиск",cardnum:"Номер карты",amount:"Сумма",fromacc:"Со счёта",send:"Отправить",pay:"Оплатить",
     qrpaytitle:"QR оплата",scanbtn:"Сканировать",myqr:"Мой QR",scanhint:"Наведите камеру на QR код для оплаты",
     done:"Платёж выполнен",donesub:"Транзакция успешно завершена",close:"Закрыть",
@@ -409,6 +445,45 @@ const CATS = [
   ['charity',{uz:"Xayriya",ru:"Благотворительность"},'#EC4899','#FCE8F3'],
 ];
 function catIcon(key,color){return `<svg viewBox="0 0 24 24" fill="none" stroke="${color}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${ICN[key]}</svg>`;}
+
+/* ---- saved-payment brand logos (inline, no external images) ---- */
+function brandLogo(type){
+  if(type==='beeline') return `
+    <span style="display:flex;flex-direction:column;align-items:center;line-height:1">
+      <svg width="30" height="22" viewBox="0 0 30 22">
+        <defs><clipPath id="bclip"><circle cx="15" cy="9" r="8"/></clipPath></defs>
+        <g clip-path="url(#bclip)">
+          <rect x="0" y="0" width="30" height="22" fill="#FFCC00"/>
+          <rect x="0" y="5.5" width="30" height="3" fill="#111"/>
+          <rect x="0" y="11" width="30" height="2.6" fill="#111"/>
+        </g>
+      </svg>
+      <span style="font-weight:800;font-size:12px;color:#111;font-style:italic;margin-top:1px">Beeline</span>
+    </span>`;
+  // uzmobile gsm
+  return `
+    <span style="display:flex;flex-direction:column;align-items:center;line-height:1.05">
+      <svg width="24" height="15" viewBox="0 0 24 16" fill="none" stroke="#1565C0" stroke-width="2" stroke-linecap="round">
+        <path d="M3 9a13 13 0 0 1 18 0"/><path d="M6.5 12.5a8 8 0 0 1 11 0"/><path d="M10.5 15.5a3 3 0 0 1 3 0"/>
+      </svg>
+      <span style="font-weight:800;font-size:11px;color:#1565C0;letter-spacing:.3px;margin-top:2px">UZMOBILE</span>
+      <span style="font-weight:800;font-size:8px;color:#1565C0;letter-spacing:3px">GSM</span>
+    </span>`;
+}
+const SAVED=[
+  {type:'uzm',uz:"Mening raqamim",ru:"Мой номер",sub:"+998 99 ***"},
+  {type:'beeline',uz:"Beeline",ru:"Beeline",sub:""},
+  {type:'uzm',uz:"UzMobile GSM",ru:"UzMobile GSM",sub:""},
+  {type:'beeline',uz:"Beeline",ru:"Beeline",sub:"+998 90 ***"},
+];
+function renderSaved(){
+  document.getElementById('savedWrap').innerHTML=SAVED.map(s=>`
+    <button class="scard" onclick="openPay('mobile')">
+      <span class="lg">${brandLogo(s.type)}</span>
+      <b>${s[lang]}</b>
+      ${s.sub?`<small>${s.sub}</small>`:''}
+    </button>`).join('');
+}
 
 const TX = [
   {d:'todo',k:'mobile',uz:'Beeline to\'ldirish',ru:'Пополнение Beeline',sub:'+998 90 123 45 67',v:-25000},
@@ -484,7 +559,7 @@ function renderMenu(){
   ];
   document.getElementById('profMenu').innerHTML=items.map(([k,ic,tag])=>`<button class="mrow" onclick="${k==='m_lang'?'toggleLang()':(k==='m_cards'?'go(\\'cards\\')':'toast(\\'soon\\')')}"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="#15C3B2" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${ic}</svg></span>${t(k)}${tag?`<span class="tag">${tag}</span>`:'<span class="arr"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></span>'}</button>`).join('');
 }
-function renderAll(){applyI18n();renderGrid(document.getElementById('homeGrid'),true);renderServices();renderPay();renderHist();renderCards();renderMenu();}
+function renderAll(){applyI18n();renderSaved();renderServices();renderPay();renderHist();renderCards();renderMenu();}
 
 /* ---------------- navigation ---------------- */
 function go(name){
