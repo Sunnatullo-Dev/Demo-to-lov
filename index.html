@@ -1,0 +1,539 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=1, user-scalable=no">
+<meta name="theme-color" content="#00C2CB">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Payme">
+<title>Payme</title>
+<style>
+  :root{
+    --aqua:#00C2CB; --green:#1FD3B0; --grad:linear-gradient(135deg,#00C2CB 0%,#1FD3B0 100%);
+    --bg:#F4F6F8; --card:#FFFFFF; --ink:#0E1726; --muted:#8A94A6; --line:#EDF0F4;
+    --pos:#16C784; --neg:#0E1726; --shadow:0 8px 24px rgba(16,23,38,.07);
+    --safe-top:env(safe-area-inset-top,0px); --safe-bot:env(safe-area-inset-bottom,0px);
+  }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;margin:0;padding:0}
+  html,body{height:100%}
+  body{
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+    background:#11202b;color:var(--ink);overscroll-behavior:none;
+    display:flex;justify-content:center;align-items:stretch;
+  }
+  /* Phone frame on big screens; full screen on phones */
+  #app{
+    width:100%;max-width:430px;background:var(--bg);position:relative;overflow:hidden;
+    min-height:100vh;display:flex;flex-direction:column;
+  }
+  @media(min-width:480px){
+    body{align-items:center;padding:18px}
+    #app{height:92vh;min-height:0;border-radius:38px;box-shadow:0 30px 80px rgba(0,0,0,.5);border:10px solid #0b1620}
+  }
+  .scroll{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding-bottom:96px}
+  .scroll::-webkit-scrollbar{display:none}
+
+  /* ---------- Header ---------- */
+  .hdr{padding:calc(var(--safe-top) + 16px) 18px 14px;display:flex;align-items:center;gap:12px}
+  .ava{width:42px;height:42px;border-radius:50%;background:var(--grad);display:flex;align-items:center;
+       justify-content:center;color:#fff;font-weight:700;font-size:16px;flex:0 0 auto}
+  .hi small{color:var(--muted);font-size:12px;display:block}
+  .hi b{font-size:16px;font-weight:700}
+  .hdr .sp{flex:1}
+  .iconbtn{width:40px;height:40px;border-radius:13px;background:#fff;box-shadow:var(--shadow);
+       border:none;display:flex;align-items:center;justify-content:center;position:relative}
+  .lng{font-weight:800;font-size:12px;color:var(--aqua);min-width:40px}
+  .dot{position:absolute;top:9px;right:10px;width:8px;height:8px;border-radius:50%;background:#FF5B5B;border:2px solid #fff}
+
+  /* ---------- Hero card ---------- */
+  .cards{display:flex;gap:12px;overflow-x:auto;padding:4px 18px 6px;scroll-snap-type:x mandatory}
+  .cards::-webkit-scrollbar{display:none}
+  .pcard{min-width:88%;scroll-snap-align:center;border-radius:22px;padding:20px;color:#fff;
+       position:relative;overflow:hidden;box-shadow:0 12px 30px rgba(0,194,203,.32)}
+  .pcard.g1{background:var(--grad)}
+  .pcard.g2{background:linear-gradient(135deg,#5B6CF6,#9A6BFF)}
+  .pcard .wm{font-weight:800;letter-spacing:.5px;font-size:18px;opacity:.95}
+  .pcard .bal{font-size:13px;opacity:.85;margin-top:18px}
+  .pcard .amt{font-size:26px;font-weight:800;margin-top:2px}
+  .pcard .num{margin-top:14px;font-size:14px;letter-spacing:2px;opacity:.9;font-variant-numeric:tabular-nums}
+  .pcard .plus{position:absolute;top:18px;right:18px;width:36px;height:36px;border-radius:50%;
+       background:rgba(255,255,255,.22);display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:300}
+  .pcard .chip{position:absolute;width:150px;height:150px;border-radius:50%;background:rgba(255,255,255,.10);
+       right:-40px;bottom:-60px}
+
+  /* ---------- Quick actions ---------- */
+  .quick{display:flex;gap:10px;padding:14px 18px 6px}
+  .qa{flex:1;background:#fff;border:none;border-radius:18px;padding:14px 6px;box-shadow:var(--shadow);
+      display:flex;flex-direction:column;align-items:center;gap:8px;font-size:11.5px;font-weight:600;color:var(--ink)}
+  .qa .ic{width:42px;height:42px;border-radius:14px;background:#E9FBF8;display:flex;align-items:center;justify-content:center}
+  .qa svg{width:22px;height:22px}
+
+  /* ---------- Search ---------- */
+  .search{margin:14px 18px 6px;background:#fff;border-radius:16px;box-shadow:var(--shadow);
+      display:flex;align-items:center;gap:10px;padding:13px 16px;color:var(--muted)}
+  .search input{border:none;outline:none;font-size:15px;flex:1;background:transparent;color:var(--ink)}
+
+  /* ---------- Section ---------- */
+  .sec{display:flex;align-items:center;justify-content:space-between;padding:18px 18px 10px}
+  .sec h3{font-size:16px;font-weight:800}
+  .sec a{color:var(--aqua);font-size:13px;font-weight:700;text-decoration:none}
+
+  /* ---------- Category grid ---------- */
+  .grid{display:grid;grid-template-columns:repeat(4,1fr);gap:6px 4px;padding:0 12px}
+  .cat{background:none;border:none;display:flex;flex-direction:column;align-items:center;gap:7px;
+       padding:10px 4px;border-radius:16px;font-size:11px;font-weight:600;color:var(--ink);line-height:1.2}
+  .cat .ic{width:52px;height:52px;border-radius:18px;display:flex;align-items:center;justify-content:center}
+  .cat svg{width:26px;height:26px}
+  .cat span{display:block;min-height:26px}
+
+  /* ---------- Payments list ---------- */
+  .plist{padding:6px 14px}
+  .prow{display:flex;align-items:center;gap:14px;background:#fff;border:none;width:100%;
+        padding:14px;border-radius:16px;margin-bottom:8px;box-shadow:var(--shadow);text-align:left}
+  .prow .ic{width:44px;height:44px;border-radius:14px;display:flex;align-items:center;justify-content:center;flex:0 0 auto}
+  .prow svg{width:23px;height:23px}
+  .prow b{font-size:14.5px;font-weight:700;display:block}
+  .prow small{font-size:12px;color:var(--muted)}
+  .prow .arr{margin-left:auto;color:#C7CFDA}
+
+  /* ---------- History ---------- */
+  .daygrp{padding:4px 18px}
+  .dayttl{font-size:12px;font-weight:700;color:var(--muted);margin:14px 0 8px;text-transform:capitalize}
+  .tx{display:flex;align-items:center;gap:14px;padding:12px 0;border-bottom:1px solid var(--line)}
+  .tx .ic{width:44px;height:44px;border-radius:14px;display:flex;align-items:center;justify-content:center;flex:0 0 auto}
+  .tx svg{width:22px;height:22px}
+  .tx b{font-size:14.5px;font-weight:700;display:block}
+  .tx small{font-size:12px;color:var(--muted)}
+  .tx .val{margin-left:auto;font-weight:800;font-size:14.5px;white-space:nowrap}
+  .tx .val.pos{color:var(--pos)}
+
+  /* ---------- Profile ---------- */
+  .phead{display:flex;flex-direction:column;align-items:center;gap:8px;padding:24px 18px 10px}
+  .phead .ava{width:84px;height:84px;font-size:30px;border-radius:50%}
+  .phead b{font-size:19px;font-weight:800}
+  .phead small{color:var(--muted)}
+  .menu{padding:10px 14px}
+  .mrow{display:flex;align-items:center;gap:14px;background:#fff;border:none;width:100%;text-align:left;
+        padding:15px 14px;border-bottom:1px solid var(--line);font-size:15px;font-weight:600;color:var(--ink)}
+  .menu .mrow:first-child{border-radius:16px 16px 0 0}
+  .menu .mrow:last-child{border-radius:0 0 16px 16px;border-bottom:none}
+  .mrow .ic{width:34px;height:34px;border-radius:11px;background:#E9FBF8;display:flex;align-items:center;justify-content:center}
+  .mrow svg{width:19px;height:19px}
+  .mrow .arr{margin-left:auto;color:#C7CFDA;font-weight:400}
+  .mrow .tag{margin-left:auto;color:var(--aqua);font-weight:800;font-size:13px}
+  .ver{text-align:center;color:var(--muted);font-size:12px;padding:18px}
+
+  /* ---------- Sub screens (flow / scanner) ---------- */
+  .screen{position:absolute;inset:0;background:var(--bg);z-index:40;display:flex;flex-direction:column;
+          transform:translateX(100%);transition:transform .26s cubic-bezier(.3,.7,.2,1)}
+  .screen.show{transform:translateX(0)}
+  .sbar{display:flex;align-items:center;gap:14px;padding:calc(var(--safe-top) + 14px) 18px 14px;font-weight:800;font-size:17px}
+  .sbar button{background:none;border:none;color:var(--ink);display:flex;align-items:center}
+  .sbody{flex:1;overflow-y:auto;padding:6px 18px 30px}
+  .field{background:#fff;border-radius:16px;box-shadow:var(--shadow);padding:14px 16px;margin-bottom:12px}
+  .field label{font-size:12px;color:var(--muted);font-weight:600}
+  .field input{border:none;outline:none;font-size:18px;width:100%;margin-top:4px;background:transparent;color:var(--ink);font-weight:700}
+  .bigbtn{width:100%;border:none;border-radius:16px;padding:17px;color:#fff;font-size:16px;font-weight:800;
+          background:var(--grad);box-shadow:0 10px 24px rgba(0,194,203,.35)}
+  .bigbtn:disabled{opacity:.45;box-shadow:none}
+  .amtkeys{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:14px}
+  .amtkeys button{background:#fff;border:none;border-radius:12px;padding:11px 4px;font-weight:700;font-size:13px;
+          box-shadow:var(--shadow);color:var(--ink)}
+
+  /* success */
+  .ok{display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:10px;height:100%;padding:30px}
+  .okc{width:104px;height:104px;border-radius:50%;background:var(--grad);display:flex;align-items:center;justify-content:center;
+       box-shadow:0 14px 34px rgba(31,211,176,.4);animation:pop .4s cubic-bezier(.2,1.4,.4,1)}
+  @keyframes pop{0%{transform:scale(.4);opacity:0}100%{transform:scale(1);opacity:1}}
+  .ok b{font-size:21px;font-weight:800}
+  .ok p{color:var(--muted)}
+  .okc svg{width:54px;height:54px;stroke-dasharray:60;stroke-dashoffset:60;animation:draw .5s .2s forwards}
+  @keyframes draw{to{stroke-dashoffset:0}}
+
+  /* scanner */
+  .scan{background:#0b1620;color:#fff}
+  .scanbody{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:26px}
+  .frame{width:230px;height:230px;border-radius:28px;position:relative}
+  .frame::before,.frame::after{content:"";position:absolute;width:46px;height:46px;border:4px solid var(--aqua)}
+  .frame .c1{position:absolute;top:0;left:0;width:46px;height:46px;border-top:4px solid var(--aqua);border-left:4px solid var(--aqua);border-radius:14px 0 0 0}
+  .frame .c2{position:absolute;top:0;right:0;width:46px;height:46px;border-top:4px solid var(--aqua);border-right:4px solid var(--aqua);border-radius:0 14px 0 0}
+  .frame .c3{position:absolute;bottom:0;left:0;width:46px;height:46px;border-bottom:4px solid var(--aqua);border-left:4px solid var(--aqua);border-radius:0 0 0 14px}
+  .frame .c4{position:absolute;bottom:0;right:0;width:46px;height:46px;border-bottom:4px solid var(--aqua);border-right:4px solid var(--aqua);border-radius:0 0 14px 0}
+  .frame::before,.frame::after{display:none}
+  .laser{position:absolute;left:8px;right:8px;height:3px;background:var(--aqua);box-shadow:0 0 14px var(--aqua);border-radius:3px;top:8px;animation:scan 2.1s ease-in-out infinite}
+  @keyframes scan{0%,100%{top:8px}50%{top:218px}}
+  .scantabs{display:flex;gap:8px;background:rgba(255,255,255,.1);border-radius:14px;padding:5px}
+  .scantabs button{flex:1;border:none;background:none;color:rgba(255,255,255,.6);padding:9px 18px;border-radius:10px;font-weight:700;font-size:13px}
+  .scantabs button.on{background:#fff;color:#0b1620}
+  .myqr{width:210px;height:210px;background:#fff;border-radius:20px;padding:12px;display:none}
+  #qrcanvas{width:100%;height:100%;image-rendering:pixelated}
+
+  /* ---------- Bottom nav ---------- */
+  .nav{position:absolute;left:0;right:0;bottom:0;background:#fff;border-top:1px solid var(--line);
+       display:flex;justify-content:space-around;align-items:flex-end;padding:8px 6px calc(var(--safe-bot) + 8px);z-index:30}
+  .nav button{background:none;border:none;display:flex;flex-direction:column;align-items:center;gap:3px;
+       font-size:10.5px;font-weight:600;color:var(--muted);flex:1;padding-top:6px}
+  .nav button svg{width:24px;height:24px}
+  .nav button.on{color:var(--aqua)}
+  .nav .fab{margin-top:-30px}
+  .nav .fab .ic{width:58px;height:58px;border-radius:50%;background:var(--grad);display:flex;align-items:center;justify-content:center;
+       box-shadow:0 10px 22px rgba(0,194,203,.45);margin-bottom:2px}
+  .nav .fab .ic svg{width:28px;height:28px}
+  .page{display:none}
+  .page.on{display:block}
+</style>
+</head>
+<body>
+<div id="app">
+
+  <!-- ===== HOME ===== -->
+  <div class="scroll">
+    <div class="page on" id="p-home">
+      <div class="hdr">
+        <div class="ava">SS</div>
+        <div class="hi"><small data-t="hi">Assalomu alaykum</small><b>Sunnatulla S.</b></div>
+        <div class="sp"></div>
+        <button class="iconbtn lng" id="lngBtn">UZ</button>
+        <button class="iconbtn" onclick="go('history')"><span class="dot"></span>
+          <svg viewBox="0 0 24 24" fill="none" stroke="#0E1726" stroke-width="2" stroke-linecap="round"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg>
+        </button>
+      </div>
+
+      <div class="cards">
+        <div class="pcard g1">
+          <div class="chip"></div>
+          <div class="plus" onclick="toast('topup')">+</div>
+          <div class="wm">Payme</div>
+          <div class="bal" data-t="balance">Balans</div>
+          <div class="amt">1 250 000 <span style="font-size:15px">so'm</span></div>
+          <div class="num">•••• •••• •••• 4471</div>
+        </div>
+        <div class="pcard g2">
+          <div class="chip"></div>
+          <div class="plus" onclick="toast('topup')">+</div>
+          <div class="wm">UZCARD</div>
+          <div class="bal" data-t="balance">Balans</div>
+          <div class="amt">340 500 <span style="font-size:15px">so'm</span></div>
+          <div class="num">•••• •••• •••• 8829</div>
+        </div>
+      </div>
+
+      <div class="quick">
+        <button class="qa" onclick="openTransfer()">
+          <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="#00C2CB" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 7h11M7 7l4-4M7 7l4 4"/><path d="M17 17H6M17 17l-4 4M17 17l-4-4"/></svg></span>
+          <span data-t="transfer">O'tkazma</span></button>
+        <button class="qa" onclick="go('pay')">
+          <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="#00C2CB" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="3"/><path d="M2 10h20"/></svg></span>
+          <span data-t="payment">To'lov</span></button>
+        <button class="qa" onclick="go('qr')">
+          <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="#00C2CB" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><path d="M14 14h3v3M21 14v.01M14 21h3M21 18v3"/></svg></span>
+          <span data-t="qr">QR</span></button>
+        <button class="qa" onclick="toast('topup')">
+          <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="#00C2CB" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg></span>
+          <span data-t="topup">To'ldirish</span></button>
+      </div>
+
+      <div class="search">
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="#8A94A6" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4-4"/></svg>
+        <input data-tp="search" placeholder="Qidirish" onfocus="go('pay')">
+      </div>
+
+      <div class="sec"><h3 data-t="payments">To'lovlar</h3><a onclick="go('pay')" data-t="all">Hammasi</a></div>
+      <div class="grid" id="homeGrid"></div>
+      <div style="height:10px"></div>
+    </div>
+
+    <!-- ===== PAYMENTS ===== -->
+    <div class="page" id="p-pay">
+      <div class="hdr"><b style="font-size:20px" data-t="payments">To'lovlar</b></div>
+      <div class="search">
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="#8A94A6" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4-4"/></svg>
+        <input id="paySearch" data-tp="search" placeholder="Qidirish" oninput="renderPay()">
+      </div>
+      <div class="plist" id="payList"></div>
+    </div>
+
+    <!-- ===== HISTORY ===== -->
+    <div class="page" id="p-history">
+      <div class="hdr"><b style="font-size:20px" data-t="history">Tarix</b></div>
+      <div id="histWrap"></div>
+    </div>
+
+    <!-- ===== PROFILE ===== -->
+    <div class="page" id="p-profile">
+      <div class="phead">
+        <div class="ava">SS</div>
+        <b>Sunnatulla Samandarov</b>
+        <small>+998 90 123 45 67</small>
+      </div>
+      <div class="menu" id="profMenu"></div>
+      <div class="ver" data-t="ver">Payme demo · versiya 1.0.0</div>
+    </div>
+  </div>
+
+  <!-- ===== BOTTOM NAV ===== -->
+  <div class="nav" id="nav">
+    <button class="on" data-nav="home" onclick="go('home')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-8 9 8"/><path d="M5 10v10h14V10"/></svg>
+      <span data-t="home">Asosiy</span></button>
+    <button data-nav="pay" onclick="go('pay')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="3"/><path d="M2 10h20"/></svg>
+      <span data-t="payments">To'lovlar</span></button>
+    <button class="fab" data-nav="qr" onclick="go('qr')">
+      <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><path d="M14 14h3v3M21 14v.01M14 21h3M21 18v3"/></svg></span>
+      <span data-t="qr" style="color:var(--aqua)">QR</span></button>
+    <button data-nav="history" onclick="go('history')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 4v4h4"/><path d="M12 8v4l3 2"/></svg>
+      <span data-t="history">Tarix</span></button>
+    <button data-nav="profile" onclick="go('profile')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/></svg>
+      <span data-t="profile">Profil</span></button>
+  </div>
+
+  <!-- ===== TRANSFER / PAY FLOW SCREEN ===== -->
+  <div class="screen" id="flow">
+    <div class="sbar"><button onclick="closeFlow()">
+      <svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="#0E1726" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button>
+      <span id="flowTitle">—</span></div>
+    <div class="sbody" id="flowBody"></div>
+  </div>
+
+  <!-- ===== QR SCANNER SCREEN ===== -->
+  <div class="screen scan" id="qr">
+    <div class="sbar"><button onclick="go('home')">
+      <svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button>
+      <span style="color:#fff" data-t="qrpay">QR to'lov</span></div>
+    <div class="scanbody">
+      <div class="scantabs">
+        <button class="on" id="tabScan" onclick="qrTab('scan')" data-t="scanqr">Skanerlash</button>
+        <button id="tabMine" onclick="qrTab('mine')" data-t="myqr">Mening QR</button>
+      </div>
+      <div class="frame" id="qrFrame"><span class="c1"></span><span class="c2"></span><span class="c3"></span><span class="c4"></span><div class="laser"></div></div>
+      <div class="myqr" id="myqr"><canvas id="qrcanvas" width="100" height="100"></canvas></div>
+      <p style="color:rgba(255,255,255,.7);font-size:14px;text-align:center;padding:0 30px" id="qrHint" data-t="scanhint">To'lov uchun QR kodni ramka ichiga joylang</p>
+    </div>
+  </div>
+
+</div>
+
+<script>
+/* ---------------- i18n ---------------- */
+const I = {
+  uz:{hi:"Assalomu alaykum",balance:"Balans",transfer:"O'tkazma",payment:"To'lov",qr:"QR",topup:"To'ldirish",
+    payments:"To'lovlar",all:"Hammasi",home:"Asosiy",history:"Tarix",profile:"Profil",search:"Qidirish",
+    qrpay:"QR to'lov",scanqr:"Skanerlash",myqr:"Mening QR",scanhint:"To'lov uchun QR kodni ramka ichiga joylang",
+    ver:"Payme demo · versiya 1.0.0",pay:"To'lash",amount:"Summa",phone:"Telefon raqami",card:"Karta raqami",
+    from:"Hisobdan",enteramt:"Summani kiriting",enterphone:"Raqamni kiriting",done:"To'lov bajarildi",
+    donesub:"Tranzaksiya muvaffaqiyatli yakunlandi",todo:"Bugun",yest:"Kecha",
+    topupd:"Hisobni to'ldirish hozircha demo rejimida",close:"Yopish",
+    m_cards:"Mening kartalarim",m_sec:"Xavfsizlik",m_lang:"Til",m_help:"Yordam",m_set:"Sozlamalar"},
+  ru:{hi:"Здравствуйте",balance:"Баланс",transfer:"Перевод",payment:"Платёж",qr:"QR",topup:"Пополнить",
+    payments:"Платежи",all:"Все",home:"Главная",history:"История",profile:"Профиль",search:"Поиск",
+    qrpay:"QR оплата",scanqr:"Сканировать",myqr:"Мой QR",scanhint:"Наведите камеру на QR код для оплаты",
+    ver:"Payme demo · версия 1.0.0",pay:"Оплатить",amount:"Сумма",phone:"Номер телефона",card:"Номер карты",
+    from:"Со счёта",enteramt:"Введите сумму",enterphone:"Введите номер",done:"Платёж выполнен",
+    donesub:"Транзакция успешно завершена",todo:"Сегодня",yest:"Вчера",
+    topupd:"Пополнение пока в демо-режиме",close:"Закрыть",
+    m_cards:"Мои карты",m_sec:"Безопасность",m_lang:"Язык",m_help:"Помощь",m_set:"Настройки"}
+};
+let lang = localStorage.getItem('payme_lang') || 'uz';
+
+/* category data: key -> {uz,ru,color,bg,icon} */
+const ICN = {
+  mobile:'<path d="M7 2h10a2 2 0 0 1 2 2v16a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2z"/><path d="M11 18h2"/>',
+  net:'<circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c3 3 3 15 0 18M12 3c-3 3-3 15 0 18"/>',
+  util:'<path d="M3 21V8l9-5 9 5v13"/><path d="M9 21v-6h6v6"/>',
+  tv:'<rect x="2" y="4" width="20" height="13" rx="2"/><path d="M8 21h8M12 17v4"/>',
+  isp:'<path d="M5 13a10 10 0 0 1 14 0M8.5 16.5a5 5 0 0 1 7 0M12 20h.01"/>',
+  game:'<rect x="2" y="7" width="20" height="10" rx="4"/><path d="M7 11v2M6 12h2M16 12h.01M18 11h.01"/>',
+  fine:'<path d="M12 3l8 4v5c0 5-3.5 8-8 9-4.5-1-8-4-8-9V7z"/>',
+  credit:'<rect x="2" y="5" width="20" height="14" rx="3"/><path d="M2 10h20M6 15h4"/>',
+  tax:'<path d="M14 3v4h4"/><path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><path d="M8 13h8M8 17h6"/>',
+  air:'<path d="M21 16v-2l-8-5V3.5a1.5 1.5 0 0 0-3 0V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L13 19v-5.5z"/>',
+  shop:'<path d="M6 2l-2 5v13a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1V7l-2-5z"/><path d="M4 7h16M9 11a3 3 0 0 0 6 0"/>',
+  charity:'<path d="M12 21s-7-4.5-9.5-8.5C.8 9.4 2.5 6 6 6c2 0 3 1 4 2 1-1 2-2 4-2 3.5 0 5.2 3.4 3.5 6.5C19 16.5 12 21 12 21z"/>',
+};
+const CATS = [
+  ['mobile',{uz:"Mobil aloqa",ru:"Мобильная связь"},'#00C2CB','#E6FBF8'],
+  ['net',{uz:"Internet",ru:"Интернет"},'#5B6CF6','#ECEDFE'],
+  ['util',{uz:"Kommunal",ru:"Коммунальные"},'#FF8A3D','#FFF1E6'],
+  ['tv',{uz:"Televideniye",ru:"Телевидение"},'#9A6BFF','#F2ECFF'],
+  ['isp',{uz:"Provayderlar",ru:"Провайдеры"},'#16C784','#E6F9EF'],
+  ['game',{uz:"O'yinlar",ru:"Игры"},'#FF5B8A','#FFE9F0'],
+  ['fine',{uz:"Jarimalar",ru:"Штрафы"},'#FF5B5B','#FFEAEA'],
+  ['credit',{uz:"Kreditlar",ru:"Кредиты"},'#0EA5E9','#E4F5FE'],
+  ['tax',{uz:"Soliqlar",ru:"Налоги"},'#64748B','#EEF1F5'],
+  ['air',{uz:"Aviabiletlar",ru:"Авиабилеты"},'#06B6D4','#E2F8FB'],
+  ['shop',{uz:"Bozor",ru:"Маркет"},'#F59E0B','#FEF4E2'],
+  ['charity',{uz:"Xayriya",ru:"Благотворительность"},'#EC4899','#FCE8F3'],
+];
+
+function catIcon(key,color){return `<svg viewBox="0 0 24 24" fill="none" stroke="${color}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${ICN[key]}</svg>`;}
+
+/* ---------------- transactions ---------------- */
+const TX = [
+  {d:'todo',k:'mobile',uz:'Beeline to\'ldirish',ru:'Пополнение Beeline',sub:'+998 90 123 45 67',v:-25000},
+  {d:'todo',k:'transfer',uz:'O\'tkazma · Aziz',ru:'Перевод · Азиз',sub:'•••• 1102',v:-150000},
+  {d:'todo',k:'in',uz:'Pul tushdi · Dilnoza',ru:'Поступление · Дилноза',sub:'•••• 7745',v:+300000},
+  {d:'yest',k:'util',uz:'Hududgaz to\'lovi',ru:'Оплата Hududgaz',sub:'L/s 880412',v:-78000},
+  {d:'yest',k:'tv',uz:'UZONLINE TV',ru:'UZONLINE TV',sub:'Tarif: Premium',v:-45000},
+  {d:'yest',k:'net',uz:'Uztelecom internet',ru:'Uztelecom интернет',sub:'•••• 4471',v:-99000},
+  {d:'yest',k:'shop',uz:'Korzinka.uz',ru:'Korzinka.uz',sub:'QR to\'lov',v:-212400},
+];
+const TXICN={transfer:['#5B6CF6','#ECEDFE','<path d="M7 7h11M7 7l4-4M7 7l4 4"/><path d="M17 17H6M17 17l-4 4M17 17l-4-4"/>'],
+  in:['#16C784','#E6F9EF','<path d="M12 5v14M12 19l-6-6M12 19l6-6"/>']};
+
+/* ---------------- render ---------------- */
+function t(k){return (I[lang][k]||k);}
+function fmt(n){return n.toLocaleString('ru-RU').replace(/,/g,' ');}
+
+function applyI18n(){
+  document.querySelectorAll('[data-t]').forEach(e=>e.textContent=t(e.dataset.t));
+  document.querySelectorAll('[data-tp]').forEach(e=>e.placeholder=t(e.dataset.tp));
+  document.getElementById('lngBtn').textContent = lang.toUpperCase();
+  document.documentElement.lang = lang;
+}
+
+function renderGrid(el,limit){
+  const list = limit?CATS.slice(0,8):CATS;
+  el.innerHTML = list.map(([k,nm,c,bg])=>`
+    <button class="cat" onclick="openPay('${k}')">
+      <span class="ic" style="background:${bg}">${catIcon(k,c)}</span>
+      <span>${nm[lang]}</span></button>`).join('');
+}
+function renderPay(){
+  const q=(document.getElementById('paySearch').value||'').toLowerCase();
+  const list=CATS.filter(([k,nm])=>nm.uz.toLowerCase().includes(q)||nm.ru.toLowerCase().includes(q));
+  document.getElementById('payList').innerHTML=list.map(([k,nm,c,bg])=>`
+    <button class="prow" onclick="openPay('${k}')">
+      <span class="ic" style="background:${bg}">${catIcon(k,c)}</span>
+      <span><b>${nm[lang]}</b></span>
+      <span class="arr"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></span>
+    </button>`).join('');
+}
+function renderHist(){
+  const groups={};TX.forEach(x=>{(groups[x.d]=groups[x.d]||[]).push(x)});
+  let html='';
+  ['todo','yest'].forEach(d=>{
+    if(!groups[d])return;
+    html+=`<div class="daygrp"><div class="dayttl">${t(d)}</div>`;
+    groups[d].forEach(x=>{
+      let c,bg,ic;
+      if(TXICN[x.k]){[c,bg,ic]=TXICN[x.k];}else{const cd=CATS.find(z=>z[0]===x.k);c=cd[2];bg=cd[3];ic=ICN[x.k];}
+      const icon=`<svg viewBox="0 0 24 24" fill="none" stroke="${c}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${ic}</svg>`;
+      html+=`<div class="tx"><span class="ic" style="background:${bg}">${icon}</span>
+        <span><b>${x[lang]}</b><small>${x.sub}</small></span>
+        <span class="val ${x.v>0?'pos':''}">${x.v>0?'+':'−'} ${fmt(Math.abs(x.v))}</span></div>`;
+    });
+    html+='</div>';
+  });
+  document.getElementById('histWrap').innerHTML=html;
+}
+function renderMenu(){
+  const items=[
+    ['m_cards','<rect x="2" y="5" width="20" height="14" rx="3"/><path d="M2 10h20"/>',''],
+    ['m_sec','<path d="M12 3l8 4v5c0 5-3.5 8-8 9-4.5-1-8-4-8-9V7z"/>',''],
+    ['m_lang','<circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c3 3 3 15 0 18M12 3c-3 3-3 15 0 18"/>',lang.toUpperCase()],
+    ['m_help','<circle cx="12" cy="12" r="9"/><path d="M9.5 9a2.5 2.5 0 1 1 3 2.4c-.7.3-1 .8-1 1.6M12 17h.01"/>',''],
+    ['m_set','<circle cx="12" cy="12" r="3"/><path d="M19 12a7 7 0 0 0-.1-1l2-1.5-2-3.5-2.4 1a7 7 0 0 0-1.7-1L14.5 2h-5l-.3 2.5a7 7 0 0 0-1.7 1l-2.4-1-2 3.5L3.1 11a7 7 0 0 0 0 2l-2 1.5 2 3.5 2.4-1a7 7 0 0 0 1.7 1l.3 2.5h5l.3-2.5a7 7 0 0 0 1.7-1l2.4 1 2-3.5-2-1.5a7 7 0 0 0 .1-1z"/>',''],
+  ];
+  document.getElementById('profMenu').innerHTML=items.map(([k,ic,tag])=>`
+    <button class="mrow" onclick="${k==='m_lang'?'toggleLang()':'toast(\\'soon\\')'}">
+      <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="#00C2CB" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${ic}</svg></span>
+      ${t(k)}
+      ${tag?`<span class="tag">${tag}</span>`:'<span class="arr"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></span>'}
+    </button>`).join('');
+}
+
+function renderAll(){applyI18n();renderGrid(document.getElementById('homeGrid'),true);renderPay();renderHist();renderMenu();}
+
+/* ---------------- navigation ---------------- */
+function go(name){
+  document.getElementById('flow').classList.remove('show');
+  if(name==='qr'){document.getElementById('qr').classList.add('show');return;}
+  document.getElementById('qr').classList.remove('show');
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('on'));
+  const pg=document.getElementById('p-'+name); if(pg)pg.classList.add('on');
+  document.querySelectorAll('#nav button').forEach(b=>b.classList.toggle('on',b.dataset.nav===name));
+  document.querySelector('.scroll').scrollTop=0;
+}
+
+/* ---------------- flows ---------------- */
+let curAmount='';
+function openTransfer(){flowForm(t('transfer'),'phone');}
+function openPay(key){const cd=CATS.find(z=>z[0]===key);flowForm(cd[1][lang],'phone',key);}
+
+function flowForm(title,kind,key){
+  curAmount='';
+  document.getElementById('flowTitle').textContent=title;
+  document.getElementById('flowBody').innerHTML=`
+    <div class="field"><label>${kind==='card'?t('card'):t('phone')}</label>
+      <input id="f_dest" inputmode="numeric" placeholder="${kind==='card'?'8600 •••• •••• ••••':'+998 __ ___ __ __'}"></div>
+    <div class="field"><label>${t('amount')}</label>
+      <input id="f_amt" inputmode="numeric" placeholder="0" oninput="this.value=fmtIn(this.value)"></div>
+    <div class="amtkeys">
+      ${[10000,25000,50000,100000].map(a=>`<button onclick="setAmt(${a})">${fmt(a)}</button>`).join('')}
+    </div>
+    <div class="field" style="display:flex;align-items:center;gap:12px">
+      <span style="width:42px;height:30px;border-radius:7px;background:var(--grad)"></span>
+      <span><small style="color:var(--muted);font-size:11px">${t('from')}</small><br><b>Payme •••• 4471</b></span>
+    </div>
+    <button class="bigbtn" onclick="payNow()">${t('pay')}</button>`;
+  document.getElementById('flow').classList.add('show');
+  setTimeout(()=>document.getElementById('f_dest').focus(),300);
+}
+function fmtIn(v){v=v.replace(/\D/g,'');return v?Number(v).toLocaleString('ru-RU').replace(/,/g,' '):'';}
+function setAmt(a){const el=document.getElementById('f_amt');el.value=fmt(a);}
+function payNow(){
+  const amt=(document.getElementById('f_amt').value||'').replace(/\D/g,'');
+  if(!amt||amt==='0'){const e=document.getElementById('f_amt');e.focus();e.parentElement.style.boxShadow='0 0 0 2px #FF5B5B';setTimeout(()=>e.parentElement.style.boxShadow='var(--shadow)',900);return;}
+  document.getElementById('flowBody').innerHTML=`
+    <div class="ok">
+      <div class="okc"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 13l4 4L19 7"/></svg></div>
+      <b>${t('done')}</b>
+      <div style="font-size:24px;font-weight:800;margin:4px 0">− ${fmt(Number(amt))} so'm</div>
+      <p>${t('donesub')}</p>
+      <button class="bigbtn" style="margin-top:18px;max-width:240px" onclick="closeFlow()">${t('close')}</button>
+    </div>`;
+}
+function closeFlow(){document.getElementById('flow').classList.remove('show');}
+
+/* ---------------- qr ---------------- */
+function qrTab(which){
+  const scan=which==='scan';
+  document.getElementById('tabScan').classList.toggle('on',scan);
+  document.getElementById('tabMine').classList.toggle('on',!scan);
+  document.getElementById('qrFrame').style.display=scan?'block':'none';
+  document.getElementById('myqr').style.display=scan?'none':'block';
+  document.getElementById('qrHint').textContent=scan?t('scanhint'):'@sunnatulla';
+}
+function drawQR(){
+  const cv=document.getElementById('qrcanvas'),x=cv.getContext('2d'),N=25,s=cv.width/N;
+  x.fillStyle='#fff';x.fillRect(0,0,cv.width,cv.height);x.fillStyle='#0b1620';
+  // deterministic pseudo-random pattern
+  let seed=7;const rnd=()=>{seed=(seed*1103515245+12345)&0x7fffffff;return seed/0x7fffffff;};
+  for(let i=0;i<N;i++)for(let j=0;j<N;j++){if(rnd()>0.5)x.fillRect(j*s,i*s,s,s);}
+  const finder=(ox,oy)=>{x.fillStyle='#0b1620';x.fillRect(ox*s,oy*s,7*s,7*s);x.fillStyle='#fff';x.fillRect((ox+1)*s,(oy+1)*s,5*s,5*s);x.fillStyle='#0b1620';x.fillRect((ox+2)*s,(oy+2)*s,3*s,3*s);};
+  x.fillStyle='#fff';x.fillRect(0,0,8*s,8*s);x.fillRect((N-8)*s,0,8*s,8*s);x.fillRect(0,(N-8)*s,8*s,8*s);
+  finder(0,0);finder(N-7,0);finder(0,N-7);
+}
+
+/* ---------------- misc ---------------- */
+function toggleLang(){lang=lang==='uz'?'ru':'uz';localStorage.setItem('payme_lang',lang);renderAll();}
+document.getElementById('lngBtn').onclick=toggleLang;
+function toast(kind){
+  const msg=kind==='topup'?t('topupd'):(t('done'));
+  const el=document.createElement('div');
+  el.textContent=msg;
+  el.style.cssText='position:absolute;left:50%;bottom:110px;transform:translateX(-50%);background:#0E1726;color:#fff;padding:12px 20px;border-radius:14px;font-size:13px;font-weight:600;z-index:90;box-shadow:0 10px 30px rgba(0,0,0,.3);max-width:80%;text-align:center';
+  document.getElementById('app').appendChild(el);
+  setTimeout(()=>el.remove(),1900);
+}
+
+/* init */
+renderAll();drawQR();
+</script>
+</body>
+</html>
